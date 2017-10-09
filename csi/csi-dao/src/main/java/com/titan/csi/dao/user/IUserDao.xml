@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.titan.csi.dao.user.IUserDao">
+    <insert id="addUser" parameterType="com.titan.csi.model.user.UserVo">
+        insert into tbl_user
+        (
+          username,
+          password
+        )
+        VALUES
+        (
+          #{user.userName, jdbcType=VARCHAR},
+          #{user.password, jdbcType=VARCHAR}
+        )
+    </insert>
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/csi-common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/csi-dao" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/csi-model" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/csi-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/csi-web" charset="UTF-8" />
+  </component>
+</project>

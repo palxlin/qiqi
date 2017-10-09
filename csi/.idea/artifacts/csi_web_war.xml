@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="csi-web:war">
+    <output-path>$PROJECT_DIR$/csi-web/target</output-path>
+    <root id="archive" name="csi-web.war">
+      <element id="artifact" artifact-name="csi-web:war exploded" />
+    </root>
+  </artifact>
+</component>

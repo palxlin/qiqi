@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/csi.iml" filepath="$PROJECT_DIR$/csi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/csi-common/csi-common.iml" filepath="$PROJECT_DIR$/csi-common/csi-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/csi-dao/csi-dao.iml" filepath="$PROJECT_DIR$/csi-dao/csi-dao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/csi-model/csi-model.iml" filepath="$PROJECT_DIR$/csi-model/csi-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/csi-service/csi-service.iml" filepath="$PROJECT_DIR$/csi-service/csi-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/csi-web/csi-web.iml" filepath="$PROJECT_DIR$/csi-web/csi-web.iml" />
+    </modules>
+  </component>
+</project>
