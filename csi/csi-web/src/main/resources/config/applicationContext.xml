@@ -16,7 +16,7 @@
     <context:property-placeholder location="classpath:config/jdbc.properties"/>
 
     <!-- 自动加service层注入-->
-    <context:component-scan base-package="com.titan.csi.service"/>
+    <context:component-scan base-package="com.csi.service"/>
 
     <!-- dbcp数据源 -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
@@ -33,12 +33,12 @@
     <!-- mybatis配置文件 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
-        <property name="mapperLocations" value="classpath:com/titan/csi/dao/*/*.xml" />
+        <property name="mapperLocations" value="classpath:com/csi/dao/*/*.xml" />
     </bean>
 
     <!-- spring与mybatis整合配置，扫描所有dao -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.titan.csi.dao"/>
+        <property name="basePackage" value="com.csi.dao"/>
     </bean>
 
     <!-- 事务 -->
@@ -62,7 +62,7 @@
     </tx:advice>
 
     <aop:config>
-        <aop:pointcut id="txPointcut" expression="execution(* com.titan.csi.*.impl..*(..))" />
+        <aop:pointcut id="txPointcut" expression="execution(* com.csi.*.impl..*(..))" />
         <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
     </aop:config>
 
