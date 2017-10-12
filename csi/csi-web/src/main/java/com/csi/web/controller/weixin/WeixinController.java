@@ -1,6 +1,7 @@
 package com.csi.web.controller.weixin;
 
 import com.csi.web.weixin.bean.Signature;
+import com.csi.web.weixin.processor.MessageProcessor;
 import com.csi.web.weixin.util.WeixinUtil;
 import com.csi.web.weixin.reply.Reply;
 import org.slf4j.Logger;
@@ -46,19 +47,42 @@ public class WeixinController {
         return null;
     }
 
-    @RequestMapping(value = "process", method = RequestMethod.POST)
+    @RequestMapping(value = "entry", method = RequestMethod.POST, produces = "application/xml;charset=UTF-8")
     @ResponseBody
-    public Reply handleWeixin(@RequestBody String message){
+    public Reply handleWeixinEntry(@RequestBody String message){
         try {
-            logger.warn("request message : {} ", message);
+            logger.warn("request message : \n{}", message);
 
-            WeixinProcessor weixinProcessor = WeixinProcessor.getWeixinProcessor(message);
+            MessageProcessor weixinProcessor = MessageProcessor.getMessageProcessor(message);
 
-            return weixinProcessor.process();
+            Reply reply = weixinProcessor.process();
+
+            logger.warn("reply message : \n{}", reply);
+
+            return reply;
         } catch (Exception e) {
 
             logger.error("unhandled exception", e);
         }
+
+        return null;
     }
+//
+//    @RequestMapping(value = "process", method = RequestMethod.POST, produces = "application/xml;charset=UTF-8")
+//    @ResponseBody
+//    public Reply handleWeixin(@RequestBody String message){
+//        try {
+//            logger.warn("request message : {} ", message);
+//
+//            MessageProcessor weixinProcessor = MessageProcessor.getMessageProcessor(message);
+//
+//            return weixinProcessor.process();
+//        } catch (Exception e) {
+//
+//            logger.error("unhandled exception", e);
+//        }
+//
+//        return null;
+//    }
 
 }

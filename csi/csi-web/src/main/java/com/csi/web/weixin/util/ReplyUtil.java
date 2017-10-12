@@ -40,7 +40,7 @@ public class ReplyUtil {
 
         replyDetail.setDescription(msg);
 
-        Reply reply = ReplyUtil.parseReplyDetailWarpper(new ReplyDetailWrapper("text", Arrays.asList(replyDetail)));
+        Reply reply = ReplyUtil.parseReplyDetailWarpper(new ReplyDetailWrapper(ReplyProcessorFactory.TEXT.getReplyType(), Arrays.asList(replyDetail)));
 
         return ReplyUtil.buildReply(reply, message);
     }

@@ -12,10 +12,6 @@ public abstract class Handler {
     private String messageTemplate;
     private String eventKey;
 
-    public Handler(String eventKey){
-        this.eventKey = eventKey;
-    }
-
     public abstract Reply handleEvent(Message message) throws WeixinException;
 
     public String getMessageTemplate() {

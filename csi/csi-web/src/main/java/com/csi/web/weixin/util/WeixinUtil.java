@@ -1,5 +1,6 @@
 package com.csi.web.weixin.util;
 
+import com.csi.web.weixin.constants.WeixinContants;
 import com.google.common.base.Charsets;
 import com.csi.web.weixin.bean.Signature;
 import com.google.common.hash.Hashing;
@@ -39,5 +40,9 @@ public class WeixinUtil {
         return StringUtils.join(list, "");
 
 
+    }
+
+    public static String getMsgType(String message) {
+        return StringUtils.substringBetween(message, WeixinContants.MSGTYPE_PREFIX, WeixinContants.MSGTYPE_SUFFIX);
     }
 }
