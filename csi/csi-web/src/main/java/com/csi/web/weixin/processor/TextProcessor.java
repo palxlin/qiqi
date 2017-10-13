@@ -1,11 +1,11 @@
 package com.csi.web.weixin.processor;
 
 import com.csi.web.weixin.constants.TextKeyEnum;
-import com.csi.web.weixin.exception.ResponseCode;
 import com.csi.web.weixin.exception.WeixinException;
 import com.csi.web.weixin.handler.Handler;
 import com.csi.web.weixin.receive.TextMessage;
 import com.csi.web.weixin.util.ServiceStaticAccess;
+import com.csi.web.weixin.exception.ResponseCode;
 import org.apache.commons.lang3.EnumUtils;
 
 /**

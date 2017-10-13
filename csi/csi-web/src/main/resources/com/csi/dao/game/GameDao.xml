@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csi.dao.game.IGameDao">
+    <insert id="createGame" parameterType="com.csi.model.game.Game">
+        insert into tbl_current_game
+        (
+        game_no,
+        game_type,
+        create_user,
+        nums,
+        pos_of_crime_user,
+        pos_of_crime_ass_user,
+        pos_of_witness_user,
+        status,
+        remark
+        )
+        VALUES
+        (
+        #{game.gameNo, jdbcType=INTEGER},
+        #{game.gameType, jdbcType=VARCHAR},
+        #{game.createUser, jdbcType=VARCHAR},
+        #{game.nums, jdbcType=INTEGER},
+        #{game.posOfCrimeUser, jdbcType=INTEGER},
+        #{game.posOfCrimeUserAss, jdbcType=INTEGER},
+        #{game.posOfWitness, jdbcType=INTEGER},
+        #{game.status, jdbcType=INTEGER},
+        #{game.remark, jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="createGameDetail" parameterType="com.csi.model.game.GameDetail">
+        insert into tbl_current_game_detail
+        (game_no, cause_of_death, location_of_crime, clue_1, clue_2, clue_3, clue_4, status, remark)
+        VALUES
+        (#{gameDetail.gameNo, jdbcType=INTEGER},
+        #{gameDetail.causeOfDeath, jdbcType=INTEGER},
+        #{gameDetail.locationOfCrime, jdbcType=INTEGER},
+        #{gameDetail.clue1, jdbcType=INTEGER},
+        #{gameDetail.clue2, jdbcType=INTEGER},
+        #{gameDetail.clue3, jdbcType=INTEGER},
+        #{gameDetail.clue4, jdbcType=INTEGER},
+        #{gameDetail.status, jdbcType=INTEGER},
+        #{gameDetail.remark, jdbcType=VARCHAR})
+    </insert>
+    <select id="selectItemNoLocationOfCrime" resultMap="itemNoList">
+        select item_no from tbl_card_crime_scene WHERE item_type = 2 and status = 0;
+    </select>
+    <resultMap id="itemNoList" type="Integer" autoMapping="true"/>
+
+    <select id="selectItemNosWitnessClues" resultMap="itemNoList">
+        select item_no from tbl_card_crime_scene WHERE item_type = 3 and status = 0;
+    </select>
+
+    <update id="kill">
+        update tbl_current_game_detail
+        set crime_item = #{crimeItemPos}, crime_clue= #{crimeCluePos}
+        where game_no = (select game_no from tbl_current_player where user_no = #{killerUserNo})
+    </update>
+
+    <update id="witness">
+        update tbl_current_game_detail
+        set witness_chosen_cause_of_death = #{causePos},
+            witness_chosen_location_of_crime = #{locationPos},
+            witness_chosen_1 = #{clue1Pos},
+            witness_chosen_2 = #{clue2Pos},
+            witness_chosen_3 = #{clue3Pos},
+            witness_chosen_4 = #{clue4Pos},
+            withnes_chosen_weight = #{weight}
+        where game_no = (select game_no from tbl_current_player where user_no = #{witnessUserNo})
+    </update>
+
+    <update id="succUpdateGame">
+        update tbl_current_game
+        set status = 99
+        where game_no = (select game_no from tbl_current_player where user_no = #{userno})
+    </update>
+    <update id="succUpdateGameDetail">
+        update tbl_current_game_detail
+        set status = 99
+        where game_no = (select game_no from tbl_current_player where user_no = #{userno})
+    </update>
+    <update id="succUpdateGamePlayer">
+        update tbl_current_player
+        set status = 99
+        where game_no = (select game_no from tbl_current_player where user_no = #{userno})
+    </update>
+
+    <update id="judgeFailedUpdateGamePlayer">
+        update tbl_current_player
+        set status = 1
+        where game_no = (select game_no from tbl_current_player where user_no = #{userno})
+    </update>
+
+    <select id="selectKiller" resultMap="killer">
+        select a.pos_of_crime_user, b.crime_item, b.crime_clue from
+        ( select * from tbl_current_game
+          where game_no = (select game_no from tbl_current_player WHERE user_no = #{userno} and status != 99) ) a
+        join
+        (select * from tbl_current_game_detail where status != 99 ) b on a.game_no = b.game_no
+    </select>
+    <resultMap id="killer" type="com.csi.model.game.KillerVo" autoMapping="true"/>
+
+    <select id="hasRightJudge" resultType="int">
+        select count(*) from tbl_current_player where status = 0 and user_no = #{userno}
+    </select>
+
+    <select id="selectGameByNo" resultType="int">
+        select count(*) from tbl_current_game where game_no = #{gameNo} and status != 99
+    </select>
+    <insert id="joinGame" parameterType="com.csi.model.game.PlayerVo">
+        insert into tbl_current_player
+        (user_no, game_no, game_role, game_pos, status,
+        crime_item_1, crime_item_2, crime_item_3, crime_item_4,
+        crime_clue_1, crime_clue_2, crime_clue_3, crime_clue_4, remark)
+        VALUES
+        (#{player.userNo, jdbcType=VARCHAR},
+        #{player.gameNo, jdbcType=INTEGER},
+        #{player.gameRole, jdbcType=INTEGER},
+        #{player.gamePos, jdbcType=INTEGER},
+		#{player.status, jdbcType=INTEGER},
+		#{player.crimeItem1, jdbcType=INTEGER},
+		#{player.crimeItem2, jdbcType=INTEGER},
+		#{player.crimeItem3, jdbcType=INTEGER},
+		#{player.crimeItem4, jdbcType=INTEGER},
+		#{player.crimeClue1, jdbcType=INTEGER},
+		#{player.crimeClue2, jdbcType=INTEGER},
+		#{player.crimeClue3, jdbcType=INTEGER},
+		#{player.crimeClue4, jdbcType=INTEGER},
+        #{player.remark, jdbcType=VARCHAR})
+    </insert>
+
+    <select id="selectAvailablePos" resultMap="playerNumberVo">
+        select a.count, b.nums from (
+          SELECT count(*) as count FROM csi.tbl_current_player where game_no = #{gameNo} and status = 0 ) a
+          , ( select nums from tbl_current_game where game_no = #{gameNo} and status != 99 )  b
+    </select>
+    <resultMap id="playerNumberVo" type="com.csi.model.game.PlayerNumberVo" autoMapping="true"/>
+
+    <select id="selectCount" resultType="int">
+        SELECT count(*) as count FROM csi.tbl_current_player where game_no = #{gameNo} and status = 0
+    </select>
+    <select id="numbers" resultType="int">
+        select nums from tbl_current_game where game_no = #{gameNo} and status != 99
+    </select>
+
+    <select id="getGameByNo" resultMap="game">
+        select id, game_no,game_type,create_user, nums, pos_of_crime_user, pos_of_crime_ass_user, pos_of_witness_user, status,remark
+        from tbl_current_game where game_no = #{gameNo} and status != 99;
+    </select>
+    <resultMap id="game" type="com.csi.model.game.GameMysqlVo"/>
+
+
+    <select id="selectItemClueUsed" resultMap="itemClueUsedList">
+        select crime_item_1, crime_item_2, crime_item_3, crime_item_4,
+                crime_clue_1, crime_clue_2, crime_clue_3, crime_clue_4
+         from tbl_current_player WHERE game_no = #{gameNo} and status = 0;
+    </select>
+    <resultMap id="itemClueUsedList" type="com.csi.model.game.ItemClueUsedVo" autoMapping="true"/>
+
+    <select id="selectAllItem" resultMap="itemAll">
+        select item_no from tbl_card_crime_item_clue where item_type = 5 and status = 0;
+    </select>
+    <resultMap id="itemAll" type="Integer" autoMapping="true"/>
+    <select id="selectAllClue" resultMap="clueAll">
+        select item_no from tbl_card_crime_item_clue where item_type = 4 and status = 0;
+    </select>
+    <resultMap id="clueAll" type="Integer" autoMapping="true"/>
+</mapper>

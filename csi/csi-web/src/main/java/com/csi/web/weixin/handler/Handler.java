@@ -1,8 +1,8 @@
 package com.csi.web.weixin.handler;
 
+import com.csi.web.weixin.exception.WeixinException;
 import com.csi.web.weixin.receive.Message;
 import com.csi.web.weixin.reply.Reply;
-import com.csi.web.weixin.exception.WeixinException;
 
 /**
  * Created by fanlin on 2017/10/11.

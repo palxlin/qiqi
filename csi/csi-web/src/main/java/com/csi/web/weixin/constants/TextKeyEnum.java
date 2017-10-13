@@ -7,7 +7,11 @@ public enum TextKeyEnum {
 
     H(1, "help"),
     C(2, "create"),
-    J(3, "join");
+    J(3, "join"),
+    K(4, "kill"),
+    W(5, "witness"),
+    G(6, "judge"),
+    X(7, "exit");
 
     private Integer key;
     private String name;

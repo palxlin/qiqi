@@ -5,7 +5,7 @@ import com.csi.exception.CsiException;
 /**
  * Created by fanlin on 2017/10/11.
  */
-public class WeixinException extends CsiException{
+public class WeixinException extends CsiException {
 
     private static final long serialVersionUID = -5696871042180912169L;
 

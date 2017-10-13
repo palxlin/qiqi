@@ -7,4 +7,5 @@ import com.csi.model.user.UserVo;
  */
 public interface IUserService {
     void addUser(UserVo userVo) throws Exception;
+
 }

@@ -22,6 +22,9 @@ public class ResponseCode {
     public class Weixin {
 
         public static final String NO_SUCH_SERVICE = "0000209";
+        public static final String WITNESS_WRONG_PARAM = "0000210"; /**目击者选择线索参数错误*/
+        public static final String JUDGE_WRONG_PARAM = "0000211"; /**断案参数错误*/
+        public static final String JOIN_WRONG_PARAM = "0000212"; /**加入错误*/
 
     }
 }

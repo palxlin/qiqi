@@ -2,8 +2,8 @@ package com.csi.web.controller.weixin;
 
 import com.csi.web.weixin.bean.Signature;
 import com.csi.web.weixin.processor.MessageProcessor;
-import com.csi.web.weixin.util.WeixinUtil;
 import com.csi.web.weixin.reply.Reply;
+import com.csi.web.weixin.util.WeixinUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;

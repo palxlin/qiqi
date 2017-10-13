@@ -9,13 +9,14 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class GameVo {
 
     private Integer gameNo;
+    private String gameType;
     private String createUser;
-    private String type;
     private Integer playerNums;
+    private String remark;
 
-    public GameVo(String createUser, String type, Integer numOfPlayers) {
+    public GameVo(String createUser, String gameType, Integer numOfPlayers) {
         this.createUser = createUser;
-        this.type = type;
+        this.gameType = gameType;
         this.playerNums = numOfPlayers;
     }
 
@@ -31,12 +32,12 @@ public class GameVo {
         return createUser;
     }
 
-    public String getType() {
-        return type;
+    public String getGameType() {
+        return gameType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setGameType(String gameType) {
+        this.gameType = gameType;
     }
 
     public void setCreateUser(String createUser) {
@@ -49,6 +50,14 @@ public class GameVo {
 
     public void setPlayerNums(Integer playerNums) {
         this.playerNums = playerNums;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     @Override
