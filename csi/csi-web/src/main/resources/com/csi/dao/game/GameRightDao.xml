@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csi.dao.game.IGameDao">
+
+    <select id="hasRightByStatusArray" resultType="int">
+        select count(*) from tbl_current_player a join tbl_current_game_detail b
+        on a.game_no = b.game_no
+        where a.status = 0 and a.user_no = #{userNo} and a.game_role = #{gameRole}
+        and b.status in
+        <foreach collection="array" item="gameStatus" index="index"
+                 open="(" close=")" separator=",">
+            #{gameStatus}
+        </foreach>
+    </select>
+
+    <select id="hasRightByRoleStatusArray" resultType="int">
+        select count(*) from tbl_current_player a join tbl_current_game_detail b
+        on a.game_no = b.game_no
+        where a.status = 0 and a.user_no = #{userNo}
+        <if test="gameRole != null">
+            and a.gamerole in
+            <foreach collection="array" item="gameRole" index="index"
+                     open="(" close=")" separator=",">
+                #{gameRole}
+            </foreach>
+        </if>
+        and b.status in
+        <foreach collection="array" item="gameStatus" index="index"
+                 open="(" close=")" separator=",">
+            #{gameStatus}
+        </foreach>
+    </select>
+
+    <select id="hasRight" resultType="int">
+        select count(*) from tbl_current_player a join tbl_current_game_detail b
+        on a.game_no = b.game_no
+        where a.status = 0 and a.user_no = #{userNo} and a.game_role = #{gameRole}
+        and b.status = #{gameStatus}
+    </select>
+</mapper>

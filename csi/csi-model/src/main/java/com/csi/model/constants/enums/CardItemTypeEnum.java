@@ -1,28 +1,24 @@
-package com.csi.web.weixin.constants;
+package com.csi.model.constants.enums;
 
 /**
- * Created by fanlin on 2017/10/12.
+ * Created by fanlin on 2017/10/14.
  */
-public enum TextKeyEnum {
+public enum CardItemTypeEnum {
 
-    H(1, "help"),
-    C(2, "create"),
-    J(3, "join"),
-    K(4, "crime"),
-    W(5, "witness"),
-    D(6, "detective"),
-    LA(7, "lookAllPlayer"),
-    LW(8, "lookWitness"),
-    LC(9, "lookCrime"),
-    X(10, "exit");
+    CAUSE_OF_DEATH(1, "死亡原因"),
+    LOCATION_OF_CRIME(2, "犯罪地点"),
+    CLUE(3, "线索蓝牌"),
+    CRIME_CLUE(4, "线索"),
+    CRIME_ITEM(5, "犯罪工具");
 
     private Integer key;
     private String name;
 
-    TextKeyEnum(Integer key, String name) {
+    CardItemTypeEnum(Integer key, String name){
         this.key = key;
         this.name = name;
     }
+
 
     public Integer getKey() {
         return key;
@@ -39,4 +35,6 @@ public enum TextKeyEnum {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }

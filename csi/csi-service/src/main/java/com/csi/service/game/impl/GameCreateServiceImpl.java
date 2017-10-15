@@ -1,6 +1,8 @@
 package com.csi.service.game.impl;
 
 import com.csi.dao.game.IGameDao;
+import com.csi.model.constants.enums.GameRoleEnum;
+import com.csi.model.constants.enums.CardItemTypeEnum;
 import com.csi.model.game.*;
 import com.csi.service.game.IGameCreateService;
 import com.csi.service.utils.GameUtils;
@@ -28,17 +30,24 @@ public class GameCreateServiceImpl implements IGameCreateService {
         Game game = GameUtils.createGameBean(createUser, type, numOfPlayers);
         GameDetail gameDetail = GameUtils.createGameDetailBean(game);
 
-        List<Integer> locationCounts = gameDao.selectItemNoLocationOfCrime();
-        Integer locationIndex = GameUtils.generatePos(locationCounts.size()) - 1;
-        gameDetail.setLocationOfCrime(locationCounts.get(locationIndex));
+        List<CrimeScene> allCrimeScene = gameDao.selectAllCardCrimeScene();
 
-        /**蓝牌*/
-        List<Integer> witnesClues = gameDao.selectItemNosWitnessClues();
-        List<Integer> random4Clues = GameUtils.random4(witnesClues);
-        gameDetail.setClue1(random4Clues.get(0));
-        gameDetail.setClue2(random4Clues.get(1));
-        gameDetail.setClue3(random4Clues.get(2));
-        gameDetail.setClue4(random4Clues.get(3));
+        /**死亡原因*/
+        List<CrimeScene> crimeSceneCauseOfDeath = GameUtils.filterCrimeScene(allCrimeScene, CardItemTypeEnum.CAUSE_OF_DEATH.getKey());
+        CrimeScene causeOfDeath = GameUtils.random(crimeSceneCauseOfDeath, 1).get(0);
+        gameDetail.setCauseOfDeath(causeOfDeath.getItemNo());
+        gameDetail.setCauseOfDeathContent(causeOfDeath.getContent());
+
+        /**随机案发地点牌*/
+        List<CrimeScene> crimeSceneLocOfCrime = GameUtils.filterCrimeScene(allCrimeScene, CardItemTypeEnum.LOCATION_OF_CRIME.getKey());
+        CrimeScene locationScene = GameUtils.random(crimeSceneLocOfCrime, 1).get(0);
+        gameDetail.setLocationOfCrime(locationScene.getItemNo());
+        gameDetail.setLocationOfCrimeContent(locationScene.getContent());
+
+        /**随机4张蓝牌*/
+        List<CrimeScene> crimeSceneWitnessClue = GameUtils.filterCrimeScene(allCrimeScene, CardItemTypeEnum.CLUE.getKey());
+        List<CrimeScene> witnessClues = GameUtils.random(crimeSceneWitnessClue, 4);
+        gameDetail.setWitnessClue(witnessClues);
 
         gameDao.createGame(game);
         gameDao.createGameDetail(gameDetail);
@@ -52,47 +61,47 @@ public class GameCreateServiceImpl implements IGameCreateService {
     public PlayerVo joinGame(String username, Integer gameNo) {
 
         /**判断房间号存在*/
-        Integer result = gameDao.selectGameByNo(gameNo);
+        Integer result = gameDao.selectCountGameByNo(gameNo);
 
-        logger.info("user {} join game: {}", username, gameNo);
-
-        PlayerVo playerVo = GameUtils.createGamePlayerVo(username, gameNo);
-
+        logger.info("user {} join game: {}", username, gameNo); PlayerVo playerVo = GameUtils.createGamePlayerVo(username, gameNo);
         GameMysqlVo game = gameDao.getGameByNo(gameNo);
         Integer selectCount = gameDao.selectCount(gameNo);
         if (selectCount < game.getNums()) {
+
             Integer gamePos = selectCount + 1;
             playerVo.setGamePos(gamePos);
+            playerVo.setGameNums(game.getNums());
 
             if(gamePos == game.getPos_of_witness_user()){
-                playerVo.setGameRole(1); // 1 witnes , 2 killer 3. killer assist
+
+                playerVo.setGameRole(GameRoleEnum.WITNESS.getKey()); // 1 witnes , 2 killer 3. killer assist
             } else if(gamePos == game.getPos_of_crime_user()){
-                playerVo.setGameRole(2);
+
+                playerVo.setGameRole(GameRoleEnum.MURDER.getKey());
             } else if(gamePos == game.getPos_of_crime_ass_user()) {
-                playerVo.setGameRole(3);
+
+                playerVo.setGameRole(GameRoleEnum.MURDER_ASSIST.getKey());
             } else {
-                playerVo.setGameRole(0);
+
+                playerVo.setGameRole(GameRoleEnum.DETECTIVE.getKey());
             }
 
+            playerVo.setGameWitness(game.getPos_of_witness_user());
+            playerVo.setGameCrime(game.getPos_of_crime_user());
+            playerVo.setGameCrimeAss(game.getPos_of_crime_ass_user());
+
             List<ItemClueUsedVo> itemClueVoUsedList = gameDao.selectItemClueUsed(gameNo);
-            List<Integer> itemAllList = gameDao.selectAllItem();
-            List<Integer> clueAllList = gameDao.selectAllClue();
+            List<ItemClueVo> itemAllList = gameDao.selectAllItem(CardItemTypeEnum.CRIME_ITEM.getKey());
+            List<ItemClueVo> clueAllList = gameDao.selectAllItem(CardItemTypeEnum.CRIME_CLUE.getKey());
             List<Integer> itemClueUsedList = GameUtils.parseVoList(itemClueVoUsedList);
 
-            List<Integer> itemList = GameUtils.find4(itemAllList, itemClueUsedList);
-            List<Integer> clueList = GameUtils.find4(clueAllList, itemClueUsedList);
+            List<ItemClueVo> itemList = GameUtils.find4(itemAllList, itemClueUsedList);
+            List<ItemClueVo> clueList = GameUtils.find4(clueAllList, itemClueUsedList);
 
-            playerVo.setCrimeItem1(itemList.get(0));
-            playerVo.setCrimeItem2(itemList.get(1));
-            playerVo.setCrimeItem3(itemList.get(2));
-            playerVo.setCrimeItem4(itemList.get(3));
+            PlayerVo playerVo1 = GameUtils.setPlayerItem(playerVo, itemList, clueList) ;
 
-            playerVo.setCrimeClue1(clueList.get(0));
-            playerVo.setCrimeClue2(clueList.get(1));
-            playerVo.setCrimeClue3(clueList.get(2));
-            playerVo.setCrimeClue4(clueList.get(3));
+            gameDao.joinGame(playerVo1);
 
-            gameDao.joinGame(playerVo);
             logger.info("user {} join game: {} succes", username, gameNo);
 
             return playerVo;

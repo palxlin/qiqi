@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class CodeMapping {
 
-    private static final String FILE_NAME = "codemapping.properties";
+    private static final String FILE_NAME = "config/business/codemapping.properties";
 
     // A7代表未捕获异常
     private static final String DEFAULT_RESP = "A7";

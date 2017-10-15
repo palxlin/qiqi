@@ -14,6 +14,7 @@ public class ItemClueUsedVo {
     private Integer crime_clue_3;
     private Integer crime_clue_4;
 
+
     public Integer getCrime_item_1() {
         return crime_item_1;
     }
@@ -77,4 +78,5 @@ public class ItemClueUsedVo {
     public void setCrime_clue_4(Integer crime_clue_4) {
         this.crime_clue_4 = crime_clue_4;
     }
+
 }

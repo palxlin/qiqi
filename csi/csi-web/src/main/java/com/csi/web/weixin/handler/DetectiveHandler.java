@@ -1,5 +1,7 @@
 package com.csi.web.weixin.handler;
 
+import com.csi.service.game.IGameParamService;
+import com.csi.service.game.IGamePermissionService;
 import com.csi.service.game.IGameService;
 import com.csi.web.weixin.exception.ResponseCode;
 import com.csi.web.weixin.exception.WeixinException;
@@ -14,11 +16,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Created by fanlin on 2017/10/13.
  */
-public class JudgeHandler extends Handler{
-    private static final Logger logger = LoggerFactory.getLogger(JudgeHandler.class);
+public class DetectiveHandler extends Handler{
+    private static final Logger logger = LoggerFactory.getLogger(DetectiveHandler.class);
 
     @Autowired
     IGameService gameService;
+
+    @Autowired
+    IGamePermissionService gamePermissionService;
+
+    @Autowired
+    IGameParamService gameParamService;
 
     @Override
     public Reply handleEvent(Message message) throws WeixinException {
@@ -26,10 +34,24 @@ public class JudgeHandler extends Handler{
         TextMessage textMessage = (TextMessage) message;
 
         String username = textMessage.getFromUserName();
+        String content = textMessage.getContent();
+
+        /**权限判断*/
+        boolean hasRight = gamePermissionService.hasRightDetectiveGame(username);
+        if(!hasRight){
+            throw new WeixinException(ResponseCode.Weixin.NO_RIGHT_DETECTIVE);
+        }
+
+        /**参数判断*/
+        boolean isCorrectParam = gameParamService.isCorrectParamDetectiveGame(content);
+        if(!isCorrectParam) {
+
+            throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_DETECTIVE);
+        }
 
         String[] cluePos = textMessage.getContent().split(" ");
         if(cluePos.length < 3){
-            throw new WeixinException(ResponseCode.Weixin.JUDGE_WRONG_PARAM);
+            throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_JUDGE);
         }
 
         Integer killerPos = Integer.parseInt(textMessage.getContent().split(" ")[1]);

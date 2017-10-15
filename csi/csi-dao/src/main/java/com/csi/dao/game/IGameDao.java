@@ -13,9 +13,9 @@ public interface IGameDao {
     void createGame(@Param("game") Game game);
     void createGameDetail(@Param("gameDetail") GameDetail gameDetail);
 
-    List<Integer> selectItemNoLocationOfCrime();
+    List<CrimeScene> selectItemNoLocationOfCrime();
 
-    void kill(@Param("killerUserNo") String killerUserNo, @Param("crimeItemPos") Integer crimeItemPos, @Param("crimeCluePos") Integer crimeCluePos);
+    void crime(@Param("killerUserNo") String killerUserNo, @Param("crimeItemPos") Integer crimeItemPos, @Param("crimeCluePos") Integer crimeCluePos);
 
     void witness(@Param("witnessUserNo") String witnessUserNo,
                  @Param("causePos") Integer causePos, @Param("locationPos") Integer locationPos,
@@ -23,7 +23,8 @@ public interface IGameDao {
                  @Param("clue3Pos") Integer clue3Pos, @Param("clue4Pos") Integer clue4pos,
                  @Param("weight") Integer weight);
 
-    List<Integer> selectItemNosWitnessClues();
+    List<CrimeScene> selectCardCrimeScene(@Param("itemType") Integer itemType);
+    List<CrimeScene> selectAllCardCrimeScene();
 
     KillerVo selectKiller(@Param("userno") String userno);
 
@@ -33,22 +34,32 @@ public interface IGameDao {
 
     void judgeFailedUpdateGamePlayer(@Param("userno") String userno);
 
-    Integer hasRightJudge(@Param("userno") String userno);
+    Integer selectCountInGame(@Param("userNo") String userno);
 
-    Integer selectGameByNo(@Param("gameNo") Integer gameNo);
+    Integer selectCountGameByNo(@Param("gameNo") Integer gameNo);
 
     void joinGame(@Param("player") PlayerVo player);
 
-    PlayerNumberVo selectAvailablePos(@Param("gameNo") Integer gameNo);
+//    PlayerNumberVo selectAvailablePos(@Param("gameNo") Integer gameNo);
 
-    Integer numbers(@Param("gameNo") Integer gameNo);
+//    Integer numbers(@Param("gameNo") Integer gameNo);
     Integer selectCount(@Param("gameNo") Integer gameNo);
 
     GameMysqlVo getGameByNo(@Param("gameNo") Integer gameNo);
 
     List<ItemClueUsedVo> selectItemClueUsed(Integer gameNo);
 
-    List<Integer> selectAllItem();
+    List<ItemClueVo> selectAllItem(@Param("itemType") Integer itemType);
 
-    List<Integer> selectAllClue();
+    Integer hasRightByStatusArray(@Param("userNo") String userno, @Param("gameRole") Integer gameRole, @Param("gameStatus") Integer[] status);
+    Integer hasRightByRoleStatusArray(@Param("userNo") String userno, @Param("gameRole") Integer[] gameRole, @Param("gameStatus") Integer[] status);
+    Integer hasRight(@Param("userNo") String userno, @Param("gameRole") Integer gameRole, @Param("gameStatus") Integer gameStatus);
+
+    /**查询游戏信息*/
+    GameVo selectGameByNo(@Param("gameNo") Integer gameNo);
+    GameVo selectGameByUserNo(@Param("userNo") String userNo);
+
+    /**查看所有玩家的工具和线索*/
+    List<PlayerVo> lookAllPlayer(@Param("userNo") String userNo);
+
 }

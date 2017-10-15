@@ -1,6 +1,9 @@
 package com.csi.web.weixin.handler;
 
+import com.csi.service.game.IGameParamService;
+import com.csi.service.game.IGamePermissionService;
 import com.csi.service.game.IGameService;
+import com.csi.service.utils.GameMessageUtil;
 import com.csi.web.weixin.exception.ResponseCode;
 import com.csi.web.weixin.exception.WeixinException;
 import com.csi.web.weixin.receive.Message;
@@ -24,17 +27,34 @@ public class WitnessHandler extends Handler{
     @Autowired
     IGameService gameService;
 
+    @Autowired
+    IGamePermissionService gamePermissionService;
+
+    @Autowired
+    IGameParamService gameParamService;
+
     @Override
     public Reply handleEvent(Message message) throws WeixinException {
 
         TextMessage textMessage = (TextMessage) message;
 
         String username = textMessage.getFromUserName();
+        String content = textMessage.getContent();
+
+        /**权限判断*/
+        boolean hasRight = gamePermissionService.hasRightWitness(username);
+        if(!hasRight){
+            throw new WeixinException(ResponseCode.Weixin.NO_RIGHT_WITNESS);
+        }
+
+        /**参数判断*/
+        boolean isCorrectParam = gameParamService.isCorrectParamWitness(content);
+        if(!isCorrectParam) {
+
+            throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_WITNESS);
+        }
 
         String[] cluePos = textMessage.getContent().split(" ");
-        if(cluePos.length < 7){
-            throw new WeixinException(ResponseCode.Weixin.WITNESS_WRONG_PARAM);
-        }
 
         Integer causeOfDeathPos = Integer.parseInt(cluePos[1]);
         Integer locOfCrimePos = Integer.parseInt(cluePos[2]);
@@ -57,6 +77,8 @@ public class WitnessHandler extends Handler{
 
         gameService.night1Witness(username, posList);
 
-        return ReplyUtil.buildTextReply(String.format("目击者选择结束" ), message);
+        String textReply = GameMessageUtil.weinessSucess();
+
+        return ReplyUtil.buildTextReply(textReply, message);
     }
 }

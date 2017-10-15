@@ -1,5 +1,9 @@
 package com.csi.service.game;
 
+import com.csi.model.game.GameVo;
+import com.csi.model.game.ItemClueVo;
+import com.csi.model.game.PlayerVo;
+
 import java.util.List;
 
 /**
@@ -13,7 +17,10 @@ public interface IGameService {
     Integer night1Witness(String createUser, List<Integer> witnessClues);
 
     /**警察断案*/
-    Integer judge(String createUser, Integer killerPos, Integer ItemPos, Integer CluePos);
+    Integer judge(String userNo, Integer crimePos, Integer crimeItemPos, Integer crimeCluePos);
 
 
+    GameVo lookCrimeItem(String userNo);
+    List<PlayerVo> lookAllPlayer(String userNo);
+    GameVo lookWitness(String userNo);
 }

@@ -42,6 +42,6 @@ public class ResponseCodeHelper {
     }
 
     private static final String getMsg(String mappedCode) {
-        return ResourceBundle.getBundle("responsecodes").getString(mappedCode);
+        return ResourceBundle.getBundle("config/business/responsecodes").getString(mappedCode);
     }
 }

@@ -1,9 +1,9 @@
 package com.csi.web.weixin.handler;
 
 import com.csi.model.game.PlayerVo;
-import com.csi.service.game.IGameCreateService;
 import com.csi.service.game.IGameParamService;
 import com.csi.service.game.IGamePermissionService;
+import com.csi.service.game.IGameService;
 import com.csi.service.utils.GameMessageUtil;
 import com.csi.web.weixin.exception.ResponseCode;
 import com.csi.web.weixin.exception.WeixinException;
@@ -15,15 +15,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * Created by fanlin on 2017/10/12.
- */
-public class JoinHandler extends Handler{
+import java.util.List;
 
-    private static final Logger logger = LoggerFactory.getLogger(JoinHandler.class);
+/**
+ * Created by fanlin on 2017/10/15.
+ */
+public class LookAllPlayerHandler extends Handler {
+
+    private static final Logger logger = LoggerFactory.getLogger(LookAllPlayerHandler.class);
 
     @Autowired
-    IGameCreateService gameCreateService;
+    IGameService gameService;
 
     @Autowired
     IGamePermissionService gamePermissionService;
@@ -40,25 +42,21 @@ public class JoinHandler extends Handler{
         String content = textMessage.getContent();
 
         /**权限判断*/
-        boolean hasRight = gamePermissionService.hasRightJoinGame(username);
-        if(!hasRight){
-            throw new WeixinException(ResponseCode.Weixin.NO_RIGHT_JOIN_GAME);
+        boolean hasRight = gamePermissionService.hasRightLookAllPlayer(username);
+        if (!hasRight) {
+            throw new WeixinException(ResponseCode.Weixin.NO_RIGHT_LOOK_ALL_PLAYER);
         }
 
         /**参数判断*/
-        boolean isCorrectParam = gameParamService.isCorrectParamJoinGame(content);
-        if(!isCorrectParam) {
+        boolean isCorrectParam = gameParamService.isCorrectParamLookAllPlayer(content);
+        if (!isCorrectParam) {
 
-            throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_JOIN);
+            throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_LOOK_ALL_PLAYER);
         }
 
-        Integer gameNo = Integer.parseInt(content.split(" ")[1]);
+        List<PlayerVo> playerVos = gameService.lookAllPlayer(username);
 
-        PlayerVo playerVo= gameCreateService.joinGame(username, gameNo);
-
-        String text = playerVo != null ?
-                GameMessageUtil.joinSuccess(playerVo):
-                GameMessageUtil.joinFailed();
+        String text = GameMessageUtil.textAllItems(playerVos);
 
         return ReplyUtil.buildTextReply(text, message);
 

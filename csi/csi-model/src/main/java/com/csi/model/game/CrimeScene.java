@@ -7,7 +7,7 @@ public class CrimeScene {
 
     private Integer id;
     private Integer itemNo;
-    private String itemType;
+    private Integer itemType;
     private String content;
     private String pic;
     private Integer status;
@@ -29,11 +29,11 @@ public class CrimeScene {
         this.itemNo = itemNo;
     }
 
-    public String getItemType() {
+    public Integer getItemType() {
         return itemType;
     }
 
-    public void setItemType(String itemType) {
+    public void setItemType(Integer itemType) {
         this.itemType = itemType;
     }
 

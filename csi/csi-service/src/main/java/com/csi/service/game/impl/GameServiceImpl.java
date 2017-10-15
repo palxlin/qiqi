@@ -1,7 +1,10 @@
 package com.csi.service.game.impl;
 
 import com.csi.dao.game.IGameDao;
+import com.csi.model.game.GameVo;
+import com.csi.model.game.ItemClueVo;
 import com.csi.model.game.KillerVo;
+import com.csi.model.game.PlayerVo;
 import com.csi.service.game.IGameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +23,15 @@ public class GameServiceImpl implements IGameService {
     @Override
     public Integer night1Killing(String killerUserNo, Integer itemPos, Integer cluePos) {
 
-        gameDao.kill(killerUserNo, itemPos, cluePos);
+        try {
 
-        return 0;
+            gameDao.crime(killerUserNo, itemPos, cluePos);
+
+            return 0;
+        } catch (Exception e) {
+
+            return -1;
+        }
     }
 
     @Override
@@ -30,17 +39,12 @@ public class GameServiceImpl implements IGameService {
 
         gameDao.witness(createUser,
                 posList.get(0), posList.get(1), posList.get(2), posList.get(3), posList.get(4), posList.get(5), posList.get(6));
-        return null;
+
+        return 0;
     }
 
     @Override
     public Integer judge(String judgeUser, Integer killerPos, Integer itemPos, Integer cluePos) {
-
-        /**检查当前用户是否可以断案*/
-        boolean hasRightJudge = gameDao.hasRightJudge(judgeUser) >= 1 ? true : false;
-        if(!hasRightJudge){
-            return -1;
-        }
 
         KillerVo killerVo = gameDao.selectKiller(judgeUser);
 
@@ -60,4 +64,21 @@ public class GameServiceImpl implements IGameService {
 
         return 1;
     }
+
+    @Override
+    public GameVo lookCrimeItem(String userNo) {
+        return gameDao.selectGameByUserNo(userNo);
+    }
+
+    @Override
+    public List<PlayerVo> lookAllPlayer(String userNo) {
+        /**看全场人员的工具和线索*/
+        return gameDao.lookAllPlayer(userNo);
+    }
+
+    @Override
+    public GameVo lookWitness(String userNo) {
+        return null;
+    }
+
 }

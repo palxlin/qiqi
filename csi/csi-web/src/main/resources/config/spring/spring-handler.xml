@@ -8,9 +8,13 @@
     <bean id="helpHandler" class="com.csi.web.weixin.handler.HelpHandler" lazy-init="false" />
     <bean id="createHandler" class="com.csi.web.weixin.handler.CreateHandler" lazy-init="false" />
     <bean id="joinHandler" class="com.csi.web.weixin.handler.JoinHandler" lazy-init="false" />
-    <bean id="killHandler" class="com.csi.web.weixin.handler.KillHandler" lazy-init="false" />
+    <bean id="crimeHandler" class="com.csi.web.weixin.handler.CrimeHandler" lazy-init="false" />
     <bean id="witnessHandler" class="com.csi.web.weixin.handler.WitnessHandler" lazy-init="false" />
-    <bean id="judgeHandler" class="com.csi.web.weixin.handler.JudgeHandler" lazy-init="false" />
+    <bean id="detectiveHandler" class="com.csi.web.weixin.handler.DetectiveHandler" lazy-init="false" />
     <bean id="exitHandler" class="com.csi.web.weixin.handler.ExitHandler" lazy-init="false" />
+
+    <bean id="lookAllPlayerHandler" class="com.csi.web.weixin.handler.LookAllPlayerHandler" lazy-init="false"/>
+    <bean id="lookCrimeHandler" class="com.csi.web.weixin.handler.LookCrimeHandler" lazy-init="false"/>
+    <bean id="lookWitnessHandler" class="com.csi.web.weixin.handler.LookWitnessHandler" lazy-init="false"/>
 
 </beans>

@@ -29,14 +29,18 @@ public abstract class MessageProcessor {
     public Reply process() {
 
         try {
+
             Reply reply = getEventHandler().handleEvent(this.message);
+
             return reply;
+
         } catch (WeixinException e){
             Reply reply = ResponseCodeHelper.parseMessage(this.message, e);
 //            logger.warn(JsonUtil.toJson(reply));
 
             if(ResponseCode.Weixin.NO_SUCH_SERVICE.equals(e.getResponseCode())) {
-                return null;
+                e.setResponseCode(ResponseCode.Weixin.RETURN_HELP);
+                return ResponseCodeHelper.parseMessage(this.message, e);
             }
             return reply;
         }

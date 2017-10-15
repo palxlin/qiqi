@@ -1,11 +1,7 @@
 package com.csi.service.utils;
 
-import com.csi.model.constants.CardStable;
 import com.csi.model.constants.enums.GameStatusEnums;
-import com.csi.model.game.Game;
-import com.csi.model.game.GameDetail;
-import com.csi.model.game.ItemClueUsedVo;
-import com.csi.model.game.PlayerVo;
+import com.csi.model.game.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +47,9 @@ public class GameUtils {
 
         gameDetail.setGameNo(game.getGameNo());
 
-        /**生成死亡原因、案发地点以及四张蓝色线索牌*/
+        /**生成死亡原因、案发地点以及四张蓝色线索牌
         gameDetail.setCauseOfDeath(CardStable.NUM_CAUSE_OF_DEATH);
+        */
 
         gameDetail.setStatus(0);
 
@@ -99,31 +96,6 @@ public class GameUtils {
         return randPos;
     }
 
-    public static List<Integer> random4(List<Integer> witnesClues) {
-        Integer ceiling = witnesClues.size();
-        List<Integer> result = new ArrayList<Integer>();
-        List<Integer> exceptions = new ArrayList<Integer>();
-
-        Integer num1 = generatePos(ceiling);
-        exceptions.add(num1);
-
-        Integer num2 = generatePos(ceiling, exceptions);
-        exceptions.add(num2);
-
-        Integer num3 = generatePos(ceiling, exceptions);
-        exceptions.add(num3);
-
-        Integer num4 = generatePos(ceiling, exceptions);
-        exceptions.add(num4);
-
-        result.add(num1);
-        result.add(num2);
-        result.add(num3);
-        result.add(num4);
-
-        return result;
-    }
-
     public static PlayerVo createGamePlayerVo(String username, Integer gameNo) {
 
         PlayerVo playerVo = new PlayerVo();
@@ -154,14 +126,121 @@ public class GameUtils {
 
     }
 
-    public static List<Integer> find4(List<Integer> listAll, List<Integer> listExceptions) {
-        List<Integer> result = new ArrayList<>();
+    public static List<ItemClueVo> find4(List<ItemClueVo> listAll, List<Integer> listExceptions) {
+        List<ItemClueVo> result = new ArrayList<>();
 
-        while (result.size() <=4 ) {
-            Integer pos = generatePos(listAll.size());
-            Integer itemNo = listAll.get(pos);
-            if(!listExceptions.contains(itemNo))
-                result.add(itemNo);
+        while (result.size() <= 4) {
+            Integer pos = generatePos(listAll.size()) - 1;
+
+            ItemClueVo itemClueVo = listAll.get(pos);
+            Integer itemNo = itemClueVo.getItemNo();
+            if (!listExceptions.contains(itemNo))
+                result.add(itemClueVo);
+        }
+
+        return result;
+    }
+
+    public static boolean isElementBetweenMaxMin(Integer[] integers, Integer max, Integer min) {
+
+        for (int i = 0; i < integers.length; i++) {
+            if (integers[i] > max || integers[i] < min)
+                return false;
+        }
+        return true;
+    }
+
+    public static boolean isElementBetweenMaxMin(String[] integers, Integer max, Integer min) {
+
+        try {
+            for (int i = 0; i < integers.length; i++) {
+                if (Integer.parseInt(integers[i]) > max || Integer.parseInt(integers[i]) < min)
+                    return false;
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean is123456(Integer num) {
+        /*判断输入数字是否是6位数，而且每一位都是1-6且不相同*/
+        if (num < 123456 || num > 654321)
+            return false;
+
+        String str = num.toString();
+        int[] intArray = new int[str.length()];// 新建一个数组用来保存num每一位的数字
+        for (int i = 0; i < str.length(); i++) {
+            Character ch = str.charAt(i);
+            intArray[i] = Integer.parseInt(ch.toString());
+        }
+
+        for (int i = 0; i < intArray.length; i++) {
+            for (int j = i + 1; j < intArray.length; j++)
+                if (intArray[i] == intArray[j])
+                    return false;
+        }
+
+        return true;
+
+    }
+
+    public static PlayerVo setPlayerItem(PlayerVo playerVo, List<ItemClueVo> itemList, List<ItemClueVo> clueList) {
+
+        playerVo.setCrimeItem1(itemList.get(0).getItemNo());
+        playerVo.setCrimeItem2(itemList.get(1).getItemNo());
+        playerVo.setCrimeItem3(itemList.get(2).getItemNo());
+        playerVo.setCrimeItem4(itemList.get(3).getItemNo());
+
+        playerVo.setCrimeClue1(clueList.get(0).getItemNo());
+        playerVo.setCrimeClue2(clueList.get(1).getItemNo());
+        playerVo.setCrimeClue3(clueList.get(2).getItemNo());
+        playerVo.setCrimeClue4(clueList.get(3).getItemNo());
+
+        playerVo.setCrimeItem1Name(itemList.get(0).getItemName());
+        playerVo.setCrimeItem2Name(itemList.get(1).getItemName());
+        playerVo.setCrimeItem3Name(itemList.get(2).getItemName());
+        playerVo.setCrimeItem4Name(itemList.get(3).getItemName());
+
+        playerVo.setCrimeClue1Name(clueList.get(0).getItemName());
+        playerVo.setCrimeClue2Name(clueList.get(1).getItemName());
+        playerVo.setCrimeClue3Name(clueList.get(2).getItemName());
+        playerVo.setCrimeClue4Name(clueList.get(3).getItemName());
+
+        playerVo.setCrimeItem1PicUrl(itemList.get(0).getItemPicUrl());
+        playerVo.setCrimeItem2PicUrl(itemList.get(1).getItemPicUrl());
+        playerVo.setCrimeItem3PicUrl(itemList.get(2).getItemPicUrl());
+        playerVo.setCrimeItem4PicUrl(itemList.get(3).getItemPicUrl());
+
+        playerVo.setCrimeClue1PicUrl(clueList.get(0).getItemPicUrl());
+        playerVo.setCrimeClue2PicUrl(clueList.get(1).getItemPicUrl());
+        playerVo.setCrimeClue3PicUrl(clueList.get(2).getItemPicUrl());
+        playerVo.setCrimeClue4PicUrl(clueList.get(3).getItemPicUrl());
+        return playerVo;
+    }
+
+    public static List<CrimeScene> random(List<CrimeScene> allCrimeScene, Integer randomNums) {
+
+        Integer ceiling = allCrimeScene.size();
+        List<CrimeScene> result = new ArrayList<>();
+        List<Integer> exceptions = new ArrayList<>();
+
+        for (int i = 0; i < randomNums; i++) {
+            Integer num = generatePos(ceiling, exceptions) - 1;
+            exceptions.add(num);
+            result.add(allCrimeScene.get(num));
+        }
+
+        return result;
+    }
+
+    public static List<CrimeScene> filterCrimeScene(List<CrimeScene> allCrimeScene, Integer key) {
+
+        List<CrimeScene> result = new ArrayList<>();
+
+        for (CrimeScene crimeScene : allCrimeScene) {
+            if (crimeScene.getItemType() == key)
+                result.add(crimeScene);
         }
 
         return result;

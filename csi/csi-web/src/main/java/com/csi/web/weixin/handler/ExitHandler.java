@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ExitHandler extends Handler{
 
-    private static final Logger logger = LoggerFactory.getLogger(JudgeHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(DetectiveHandler.class);
 
     @Override
     public Reply handleEvent(Message message) throws WeixinException {

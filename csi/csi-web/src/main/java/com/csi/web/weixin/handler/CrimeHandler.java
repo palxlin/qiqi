@@ -1,9 +1,8 @@
 package com.csi.web.weixin.handler;
 
-import com.csi.model.game.PlayerVo;
-import com.csi.service.game.IGameCreateService;
 import com.csi.service.game.IGameParamService;
 import com.csi.service.game.IGamePermissionService;
+import com.csi.service.game.IGameService;
 import com.csi.service.utils.GameMessageUtil;
 import com.csi.web.weixin.exception.ResponseCode;
 import com.csi.web.weixin.exception.WeixinException;
@@ -16,14 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Created by fanlin on 2017/10/12.
+ * Created by fanlin on 2017/10/13.
  */
-public class JoinHandler extends Handler{
+public class CrimeHandler extends Handler{
 
-    private static final Logger logger = LoggerFactory.getLogger(JoinHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(CrimeHandler.class);
 
     @Autowired
-    IGameCreateService gameCreateService;
+    IGameService gameService;
 
     @Autowired
     IGamePermissionService gamePermissionService;
@@ -40,27 +39,29 @@ public class JoinHandler extends Handler{
         String content = textMessage.getContent();
 
         /**权限判断*/
-        boolean hasRight = gamePermissionService.hasRightJoinGame(username);
+        boolean hasRight = gamePermissionService.hasRightKill(username);
         if(!hasRight){
-            throw new WeixinException(ResponseCode.Weixin.NO_RIGHT_JOIN_GAME);
+            throw new WeixinException(ResponseCode.Weixin.NO_RIGHT_KILL);
         }
 
         /**参数判断*/
-        boolean isCorrectParam = gameParamService.isCorrectParamJoinGame(content);
+        boolean isCorrectParam = gameParamService.isCorrectParamKill(content);
         if(!isCorrectParam) {
 
-            throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_JOIN);
+            throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_KILL);
         }
 
-        Integer gameNo = Integer.parseInt(content.split(" ")[1]);
+        Integer killItemPos = Integer.parseInt(content.split(" ")[1]);
+        Integer killCluePos = Integer.parseInt(content.split(" ")[2]);
 
-        PlayerVo playerVo= gameCreateService.joinGame(username, gameNo);
+        logger.info("user {} begin to crime ", username);
 
-        String text = playerVo != null ?
-                GameMessageUtil.joinSuccess(playerVo):
-                GameMessageUtil.joinFailed();
+        Integer result = gameService.night1Killing(username, killItemPos, killCluePos);
 
-        return ReplyUtil.buildTextReply(text, message);
+        String textReply = result == 0 ?
+                GameMessageUtil.killSuccess(killItemPos, killCluePos) :
+                GameMessageUtil.killFailed();
 
+        return ReplyUtil.buildTextReply(textReply, message);
     }
 }
