@@ -61,6 +61,13 @@ public class GameVo {
     private String witnessClue3Name;
     private String witnessClue4Name;
 
+    private Integer witnessCauseOfDeathWeight;
+    private Integer witnessLocationOfCrimeWeight;
+    private Integer witnessClue1Weight;
+    private Integer witnessClue2Weight;
+    private Integer witnessClue3Weight;
+    private Integer witnessClue4Weight;
+
     private Integer witnessWeight;
 
     private String remark;
@@ -453,5 +460,53 @@ public class GameVo {
 
     public void setCardClueToReplace2Title(String cardClueToReplace2Title) {
         this.cardClueToReplace2Title = cardClueToReplace2Title;
+    }
+
+    public Integer getWitnessCauseOfDeathWeight() {
+        return witnessCauseOfDeathWeight;
+    }
+
+    public void setWitnessCauseOfDeathWeight(Integer witnessCauseOfDeathWeight) {
+        this.witnessCauseOfDeathWeight = witnessCauseOfDeathWeight;
+    }
+
+    public Integer getWitnessLocationOfCrimeWeight() {
+        return witnessLocationOfCrimeWeight;
+    }
+
+    public void setWitnessLocationOfCrimeWeight(Integer witnessLocationOfCrimeWeight) {
+        this.witnessLocationOfCrimeWeight = witnessLocationOfCrimeWeight;
+    }
+
+    public Integer getWitnessClue1Weight() {
+        return witnessClue1Weight;
+    }
+
+    public void setWitnessClue1Weight(Integer witnessClue1Weight) {
+        this.witnessClue1Weight = witnessClue1Weight;
+    }
+
+    public Integer getWitnessClue2Weight() {
+        return witnessClue2Weight;
+    }
+
+    public void setWitnessClue2Weight(Integer witnessClue2Weight) {
+        this.witnessClue2Weight = witnessClue2Weight;
+    }
+
+    public Integer getWitnessClue3Weight() {
+        return witnessClue3Weight;
+    }
+
+    public void setWitnessClue3Weight(Integer witnessClue3Weight) {
+        this.witnessClue3Weight = witnessClue3Weight;
+    }
+
+    public Integer getWitnessClue4Weight() {
+        return witnessClue4Weight;
+    }
+
+    public void setWitnessClue4Weight(Integer witnessClue4Weight) {
+        this.witnessClue4Weight = witnessClue4Weight;
     }
 }

@@ -4,6 +4,7 @@ import com.csi.service.game.IGameParamService;
 import com.csi.service.game.IGamePermissionService;
 import com.csi.service.game.IGameService;
 import com.csi.service.utils.GameMessageUtil;
+import com.csi.service.utils.ParamUtils;
 import com.csi.web.weixin.exception.ResponseCode;
 import com.csi.web.weixin.exception.WeixinException;
 import com.csi.web.weixin.receive.Message;
@@ -51,8 +52,8 @@ public class CrimeHandler extends Handler{
             throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_KILL);
         }
 
-        Integer killItemPos = Integer.parseInt(content.split(" ")[1]);
-        Integer killCluePos = Integer.parseInt(content.split(" ")[2]);
+        Integer killItemPos = Integer.parseInt(ParamUtils.parseParam(content)[1]);
+        Integer killCluePos = Integer.parseInt(ParamUtils.parseParam(content)[2]);
 
         logger.info("user {} begin to crime ", username);
 

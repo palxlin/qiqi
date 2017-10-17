@@ -14,7 +14,8 @@ public enum TextKeyEnum {
     LA(7, "lookAllPlayer"),
     LW(8, "lookWitness"),
     LC(9, "lookCrime"),
-    X(10, "exit");
+    LST(10, "lookGameStatus"),
+    EXIT(90, "exit");
 
     private Integer key;
     private String name;

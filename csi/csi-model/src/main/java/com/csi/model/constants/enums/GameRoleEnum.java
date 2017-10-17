@@ -13,7 +13,7 @@ public enum GameRoleEnum {
     private Integer key;
     private String name;
 
-    GameRoleEnum(Integer key, String name){
+    GameRoleEnum(Integer key, String name) {
         this.key = key;
         this.name = name;
     }
@@ -37,11 +37,16 @@ public enum GameRoleEnum {
 
     public static GameRoleEnum parse(Integer gameRoleKey) {
 
-        for (GameRoleEnum gameRoles: values()) {
+        for (GameRoleEnum gameRoles : values()) {
             if (gameRoles.getKey().equals(gameRoleKey)) {
                 return gameRoles;
             }
         }
         return null;
+    }
+
+    public static Integer[] getAll() {
+        return new Integer[]{GameRoleEnum.WITNESS.getKey(), GameRoleEnum.MURDER.getKey(),
+                GameRoleEnum.MURDER_ASSIST.getKey(), GameRoleEnum.DETECTIVE.getKey()};
     }
 }

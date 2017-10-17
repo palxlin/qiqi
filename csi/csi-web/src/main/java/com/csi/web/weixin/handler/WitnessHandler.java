@@ -1,9 +1,11 @@
 package com.csi.web.weixin.handler;
 
+import com.csi.model.game.WitnessVo;
 import com.csi.service.game.IGameParamService;
 import com.csi.service.game.IGamePermissionService;
 import com.csi.service.game.IGameService;
 import com.csi.service.utils.GameMessageUtil;
+import com.csi.service.utils.ParamUtils;
 import com.csi.web.weixin.exception.ResponseCode;
 import com.csi.web.weixin.exception.WeixinException;
 import com.csi.web.weixin.receive.Message;
@@ -54,28 +56,29 @@ public class WitnessHandler extends Handler{
             throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_WITNESS);
         }
 
-        String[] cluePos = textMessage.getContent().split(" ");
+        String[] cluePos = ParamUtils.parseParam(content);
 
         Integer causeOfDeathPos = Integer.parseInt(cluePos[1]);
         Integer locOfCrimePos = Integer.parseInt(cluePos[2]);
-        Integer witnetssClue1Pos = Integer.parseInt(cluePos[3]);
-        Integer witnetssClue2Pos = Integer.parseInt(cluePos[4]);
-        Integer witnetssClue3Pos = Integer.parseInt(cluePos[5]);
-        Integer witnetssClue4Pos = Integer.parseInt(cluePos[6]);
+        Integer witnessClue1Pos = Integer.parseInt(cluePos[3]);
+        Integer witnessClue2Pos = Integer.parseInt(cluePos[4]);
+        Integer witnessClue3Pos = Integer.parseInt(cluePos[5]);
+        Integer witnessClue4Pos = Integer.parseInt(cluePos[6]);
         Integer weight = Integer.parseInt(cluePos[7]);
 
-        List<Integer> posList = new ArrayList<>();
-        posList.add(causeOfDeathPos);
-        posList.add(locOfCrimePos);
-        posList.add(witnetssClue1Pos);
-        posList.add(witnetssClue2Pos);
-        posList.add(witnetssClue3Pos);
-        posList.add(witnetssClue4Pos);
-        posList.add(weight);
+
+        WitnessVo witnessVo = new WitnessVo();
+        witnessVo.setCausePos(causeOfDeathPos);
+        witnessVo.setLocationPos(locOfCrimePos);
+        witnessVo.setClue1Pos(witnessClue1Pos);
+        witnessVo.setClue2Pos(witnessClue2Pos);
+        witnessVo.setClue3Pos(witnessClue3Pos);
+        witnessVo.setClue4Pos(witnessClue4Pos);
+        witnessVo.setWeight(weight);
 
         logger.info("user {} begin to witness ", username);
 
-        gameService.night1Witness(username, posList);
+        gameService.night1Witness(username, witnessVo);
 
         String textReply = GameMessageUtil.weinessSucess();
 

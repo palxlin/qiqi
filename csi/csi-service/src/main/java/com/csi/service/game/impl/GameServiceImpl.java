@@ -1,10 +1,12 @@
 package com.csi.service.game.impl;
 
 import com.csi.dao.game.IGameDao;
+import com.csi.model.constants.enums.DetectiveStatusEnum;
+import com.csi.model.constants.enums.GameStatusEnums;
 import com.csi.model.game.GameVo;
-import com.csi.model.game.ItemClueVo;
-import com.csi.model.game.KillerVo;
+import com.csi.model.game.CrimeVo;
 import com.csi.model.game.PlayerVo;
+import com.csi.model.game.WitnessVo;
 import com.csi.service.game.IGameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +23,13 @@ public class GameServiceImpl implements IGameService {
     IGameDao gameDao;
 
     @Override
-    public Integer night1Killing(String killerUserNo, Integer itemPos, Integer cluePos) {
+    public Integer night1Killing(String crimeUserNo, Integer itemPos, Integer cluePos) {
 
         try {
 
-            gameDao.crime(killerUserNo, itemPos, cluePos);
+            gameDao.crime(crimeUserNo, itemPos, cluePos);
+
+            gameDao.updateGameStatusByUserNo(crimeUserNo, GameStatusEnums.NIGHT_1_WITNESS.getId(), null);
 
             return 0;
         } catch (Exception e) {
@@ -35,10 +39,12 @@ public class GameServiceImpl implements IGameService {
     }
 
     @Override
-    public Integer night1Witness(String createUser, List<Integer> posList) {
+    public Integer night1Witness(String witnessUser, WitnessVo witnessVo) {
 
-        gameDao.witness(createUser,
-                posList.get(0), posList.get(1), posList.get(2), posList.get(3), posList.get(4), posList.get(5), posList.get(6));
+        gameDao.witness(witnessUser, witnessVo);
+//                posList.get(0), posList.get(1), posList.get(2), posList.get(3), posList.get(4), posList.get(5), posList.get(6));
+
+        gameDao.updateGameStatusByUserNo(witnessUser, GameStatusEnums.DAY_1_V4JUDGE.getId(), GameStatusEnums.NIGHT_1_WITNESS.getId());
 
         return 0;
     }
@@ -46,20 +52,21 @@ public class GameServiceImpl implements IGameService {
     @Override
     public Integer judge(String judgeUser, Integer killerPos, Integer itemPos, Integer cluePos) {
 
-        KillerVo killerVo = gameDao.selectKiller(judgeUser);
+        CrimeVo crimeVo = gameDao.selectCrime(judgeUser);
 
-        if (killerVo.getKillerPos() == killerPos
-                && killerVo.getKillerItemNo() == itemPos
-                && killerVo.getKillerClueNo() == cluePos) {
+        if (crimeVo.getCrimePos() == killerPos
+                && crimeVo.getCrimeItemPos() == itemPos
+                && crimeVo.getCrimeCluePos() == cluePos) {
 
             /**断案成功*/
             gameDao.succUpdateGame(judgeUser);
             gameDao.succUpdateGameDetail(judgeUser);
-            gameDao.succUpdateGamePlayer(judgeUser);
+            gameDao.updateGamePlayer(judgeUser, GameStatusEnums.COMPLETED_DETECT_SUCC.getId(), new CrimeVo(killerPos, itemPos, cluePos));
 
             return 0;
         } else {
-            gameDao.judgeFailedUpdateGamePlayer(judgeUser);
+//            gameDao.judgeFailedUpdateGamePlayer(judgeUser);
+            gameDao.detectiveFail(judgeUser, DetectiveStatusEnum.FAIL.getId(), DetectiveStatusEnum.NORMAL.getId());
         }
 
         return 1;
@@ -78,7 +85,18 @@ public class GameServiceImpl implements IGameService {
 
     @Override
     public GameVo lookWitness(String userNo) {
-        return null;
+        return gameDao.selectGameByUserNo(userNo);
+    }
+
+    @Override
+    public GameVo lookGameStatus(String userNo) {
+        return gameDao.selectGameByUserNo(userNo);
+    }
+
+    @Override
+    public void playerExit(String username){
+
+        gameDao.playerExit(username, DetectiveStatusEnum.EXIT.getId());
     }
 
 }

@@ -40,7 +40,10 @@ public class GamePermissionService implements IGamePermissionService {
     @Override
     public boolean hasRightKill(String username) {
 
-        Integer result = gameDao.hasRight(username, GameRoleEnum.MURDER.getKey(), GameStatusEnums.NIGHT_1_CRIME.getId());
+        Integer result = gameDao.hasRight(username, GameRoleEnum.MURDER.getKey(),
+                new Integer[]{
+                        GameStatusEnums.STARTING.getId(),
+                        GameStatusEnums.NIGHT_1_CRIME.getId()});
 
         return result >= 1;
     }
@@ -48,7 +51,8 @@ public class GamePermissionService implements IGamePermissionService {
     @Override
     public boolean hasRightKillAssist(String username) {
 
-        Integer result = gameDao.hasRight(username, GameRoleEnum.MURDER_ASSIST.getKey(), GameStatusEnums.NIGHT_2_CRIME_ASSIST.getId());
+        Integer result = gameDao.hasRight(username, GameRoleEnum.MURDER_ASSIST.getKey(),
+                new Integer[]{GameStatusEnums.NIGHT_2_CRIME_ASSIST.getId()});
 
         return result >= 1;
     }
@@ -56,7 +60,8 @@ public class GamePermissionService implements IGamePermissionService {
     @Override
     public boolean hasRightWitness(String username) {
 
-        Integer result = gameDao.hasRight(username, GameRoleEnum.WITNESS.getKey(), GameStatusEnums.NIGHT_1_WITNESS.getId());
+        Integer result = gameDao.hasRight(username, GameRoleEnum.WITNESS.getKey(),
+                new Integer[]{GameStatusEnums.NIGHT_1_WITNESS.getId()});
 
         return result >= 1;
     }
@@ -70,6 +75,27 @@ public class GamePermissionService implements IGamePermissionService {
                 GameStatusEnums.dayPhase());
 
         return result >= 1;
+    }
+
+    @Override
+    public boolean hasRightExitGame(String username) {
+
+        Integer result = gameDao.hasRightByRoleStatusArray(
+                username,
+                null,
+                GameStatusEnums.availablePhase());
+
+        return result >= 1;
+    }
+
+    @Override
+    public boolean hasRightLookAllHistory(String username) {
+        return true;
+    }
+
+    @Override
+    public boolean hasRightLookGameStatus(String username) {
+        return true;
     }
 
     @Override

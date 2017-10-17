@@ -16,5 +16,6 @@
     <bean id="lookAllPlayerHandler" class="com.csi.web.weixin.handler.LookAllPlayerHandler" lazy-init="false"/>
     <bean id="lookCrimeHandler" class="com.csi.web.weixin.handler.LookCrimeHandler" lazy-init="false"/>
     <bean id="lookWitnessHandler" class="com.csi.web.weixin.handler.LookWitnessHandler" lazy-init="false"/>
+    <bean id="lookGameStatusHandler" class="com.csi.web.weixin.handler.LookGameStatusHandler" lazy-init="false"/>
 
 </beans>

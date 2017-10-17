@@ -5,6 +5,7 @@ import com.csi.service.game.IGameCreateService;
 import com.csi.service.game.IGameParamService;
 import com.csi.service.game.IGamePermissionService;
 import com.csi.service.utils.GameMessageUtil;
+import com.csi.service.utils.ParamUtils;
 import com.csi.web.weixin.exception.ResponseCode;
 import com.csi.web.weixin.exception.WeixinException;
 import com.csi.web.weixin.receive.Message;
@@ -52,7 +53,7 @@ public class CreateHandler extends Handler{
             throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_CREATE_GAME);
         }
 
-        Integer playernnums = Integer.parseInt(content.split(" ")[1]);
+        Integer playernnums = Integer.parseInt(ParamUtils.parseParam(content)[1]);
 
         logger.info("user {} create a game with {} players", username, playernnums);
 

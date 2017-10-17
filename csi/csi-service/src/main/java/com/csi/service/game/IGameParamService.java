@@ -16,4 +16,5 @@ public interface IGameParamService {
 
     boolean isCorrectParamDetectiveGame(String content);
 
+    boolean isCorrectParamLookAllHistory(String content);
 }

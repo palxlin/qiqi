@@ -1,8 +1,10 @@
 package com.csi.service.utils;
 
+import com.csi.model.constants.enums.CardItemTypeEnum;
 import com.csi.model.constants.enums.GameStatusEnums;
 import com.csi.model.game.*;
 
+import javax.smartcardio.Card;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -244,5 +246,29 @@ public class GameUtils {
         }
 
         return result;
+    }
+
+    public static String getNameByPos(Integer key, PlayerVo crimePlayer, Integer detectiveCrimeItemPos) {
+
+        String text = "";
+        if(key == CardItemTypeEnum.CRIME_ITEM.getKey()){
+            switch (detectiveCrimeItemPos){
+                case 1: text = crimePlayer.getCrimeItem1Name();break;
+                case 2: text = crimePlayer.getCrimeItem2Name();break;
+                case 3: text = crimePlayer.getCrimeItem3Name();break;
+                case 4: text = crimePlayer.getCrimeItem4Name();break;
+                default:break;
+            }
+        } else if (key == CardItemTypeEnum.CRIME_CLUE.getKey()){
+            switch (detectiveCrimeItemPos){
+
+                case 1: text = crimePlayer.getCrimeClue1Name();break;
+                case 2: text = crimePlayer.getCrimeClue2Name();break;
+                case 3: text = crimePlayer.getCrimeClue3Name();break;
+                case 4: text = crimePlayer.getCrimeClue4Name();break;
+                default:break;
+            }
+        }
+        return text;
     }
 }

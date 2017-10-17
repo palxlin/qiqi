@@ -5,10 +5,12 @@ package com.csi.model.constants.enums;
  */
 public enum GameStatusEnums {
 
-    /**id三位数字：
-     *   第一位: 1表示夜晚，2表示白天, 9表示游戏结束
-     *   第二位：表示当前是第几个白天或夜晚
-     *   第三位：当时（夜晚或白天）的第几步*/
+    /**
+     * id三位数字：
+     * 第一位: 1表示夜晚，2表示白天, 9表示游戏结束
+     * 第二位：表示当前是第几个白天或夜晚
+     * 第三位：当时（夜晚或白天）的第几步
+     */
     STARTING(0, "游戏创建成功，开始游戏"),
     NIGHT_1_CRIME(111, "人数已满，进入第一夜，等待凶手行凶"),
     NIGHT_1_WITNESS(112, "第一夜，凶手行凶结束，等待目击者选择目击情况"),
@@ -18,8 +20,8 @@ public enum GameStatusEnums {
     DAY_2_V4JUDGE(221, "第二天，进入讨论以及断案过程"),
     NIGHT_3_WITNESS(131, "第三夜，目击者直接进行相应操作"),
     DAY_3_V4JUDGE(231, "第三天，进入讨论以及断案过程"),
-    COMPLETED_SUCC(900, "游戏结束，凶手胜利"),
-    COMPLETED_FAIL(901, "游戏结束，警察胜利"),
+    COMPLETED_CRIME_SUCC(900, "游戏结束，凶手胜利"),
+    COMPLETED_DETECT_SUCC(901, "游戏结束，警察胜利"),
     UNCOMPLETELD(902, "游戏结束，关键角色退出游戏");
 
     private Integer id;
@@ -44,6 +46,21 @@ public enum GameStatusEnums {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public static Integer[] availablePhase() {
+        /**游戏中*/
+        return new Integer[]{
+                GameStatusEnums.STARTING.getId(),
+                GameStatusEnums.NIGHT_1_CRIME.getId(),
+                GameStatusEnums.NIGHT_1_CRIME.getId(),
+                GameStatusEnums.DAY_1_V4JUDGE.getId(),
+                GameStatusEnums.DAY_2_V4JUDGE.getId(),
+                GameStatusEnums.DAY_3_V4JUDGE.getId(),
+                GameStatusEnums.NIGHT_2_CRIME_ASSIST.getId(),
+                GameStatusEnums.NIGHT_2_WITNESS.getId(),
+                GameStatusEnums.NIGHT_3_WITNESS.getId()
+        };
     }
 
     public static Integer[] dayPhase() {
@@ -80,4 +97,22 @@ public enum GameStatusEnums {
         };
     }
 
+    public static GameStatusEnums parse(Integer gameStatus) {
+
+        for (GameStatusEnums gameStatusEnums : values()) {
+            if (gameStatusEnums.getId().equals(gameStatus)) {
+                return gameStatusEnums;
+            }
+        }
+        return null;
+    }
+
+    public boolean isCompleted() {
+        if (this.getId() == GameStatusEnums.COMPLETED_CRIME_SUCC.getId()
+                || this.getId() == GameStatusEnums.COMPLETED_DETECT_SUCC.getId()
+                || this.getId() == GameStatusEnums.UNCOMPLETELD.getId())
+            return true;
+        else
+            return false;
+    }
 }

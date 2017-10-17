@@ -1,5 +1,6 @@
 package com.csi.web.weixin.processor;
 
+import com.csi.service.utils.ParamUtils;
 import com.csi.web.weixin.constants.TextKeyEnum;
 import com.csi.web.weixin.exception.WeixinException;
 import com.csi.web.weixin.handler.Handler;
@@ -36,7 +37,7 @@ public class TextProcessor extends MessageProcessor {
 
     public TextKeyEnum processContent(String message) {
 
-        String[] contents = message.split(" ");
+        String[] contents = ParamUtils.parseParam(message);
 
         TextKeyEnum textKeyEnum = EnumUtils.getEnum(TextKeyEnum.class, contents[0].toUpperCase());
 

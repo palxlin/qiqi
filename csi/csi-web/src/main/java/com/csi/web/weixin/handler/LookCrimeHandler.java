@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class LookCrimeHandler extends Handler{
 
-    private static final Logger logger = LoggerFactory.getLogger(LookAllPlayerHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(LookCrimeHandler.class);
 
     @Autowired
     IGameService gameService;

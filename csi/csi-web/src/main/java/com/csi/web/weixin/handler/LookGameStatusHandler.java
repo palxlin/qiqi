@@ -1,5 +1,6 @@
 package com.csi.web.weixin.handler;
 
+import com.csi.model.game.GameVo;
 import com.csi.service.game.IGameParamService;
 import com.csi.service.game.IGamePermissionService;
 import com.csi.service.game.IGameService;
@@ -15,11 +16,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Created by fanlin on 2017/10/12.
+ * Created by fanlin on 2017/10/16.
  */
-public class ExitHandler extends Handler{
+public class LookGameStatusHandler extends Handler {
 
-    private static final Logger logger = LoggerFactory.getLogger(DetectiveHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(LookGameStatusHandler.class);
 
     @Autowired
     IGameService gameService;
@@ -38,22 +39,23 @@ public class ExitHandler extends Handler{
         String username = textMessage.getFromUserName();
 
         /**权限判断*/
-        boolean hasRight = gamePermissionService.hasRightExitGame(username);
-        if(!hasRight){
-            throw new WeixinException(ResponseCode.Weixin.NO_RIGHT_EXIT_GAME);
+        boolean hasRight = gamePermissionService.hasRightLookGameStatus(username);
+        if (!hasRight) {
+            throw new WeixinException(ResponseCode.Weixin.NO_RIGHT_LOOK_GAME_STATUS);
         }
 
         /**参数判断
-        boolean isCorrectParam = gameParamService.isCorrectParamExitGame(content);
-        if(!isCorrectParam) {
-            throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_EXIT_GAME);
-        }
-        */
-        gameService.playerExit(username);
+         boolean isCorrectParam = gameParamService.isCorrectParamLookGameStatus(content);
+         if(!isCorrectParam) {
+         throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_LOOK_GAME_STATUS);
+         }
+         */
+        GameVo gameVo = gameService.lookGameStatus(username);
 
-        String textExit = GameMessageUtil.textExit();
+        String textExit = GameMessageUtil.textGameStatus(gameVo);
 
         return ReplyUtil.buildTextReply(textExit, message);
+
 
     }
 }

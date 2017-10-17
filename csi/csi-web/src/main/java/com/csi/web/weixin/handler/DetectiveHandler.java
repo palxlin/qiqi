@@ -3,6 +3,7 @@ package com.csi.web.weixin.handler;
 import com.csi.service.game.IGameParamService;
 import com.csi.service.game.IGamePermissionService;
 import com.csi.service.game.IGameService;
+import com.csi.service.utils.ParamUtils;
 import com.csi.web.weixin.exception.ResponseCode;
 import com.csi.web.weixin.exception.WeixinException;
 import com.csi.web.weixin.receive.Message;
@@ -16,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Created by fanlin on 2017/10/13.
  */
-public class DetectiveHandler extends Handler{
+public class DetectiveHandler extends Handler {
     private static final Logger logger = LoggerFactory.getLogger(DetectiveHandler.class);
 
     @Autowired
@@ -38,31 +39,28 @@ public class DetectiveHandler extends Handler{
 
         /**权限判断*/
         boolean hasRight = gamePermissionService.hasRightDetectiveGame(username);
-        if(!hasRight){
+        if (!hasRight) {
             throw new WeixinException(ResponseCode.Weixin.NO_RIGHT_DETECTIVE);
         }
 
         /**参数判断*/
         boolean isCorrectParam = gameParamService.isCorrectParamDetectiveGame(content);
-        if(!isCorrectParam) {
+        if (!isCorrectParam) {
 
             throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_DETECTIVE);
         }
 
-        String[] cluePos = textMessage.getContent().split(" ");
-        if(cluePos.length < 3){
-            throw new WeixinException(ResponseCode.Weixin.WRONG_PARAM_JUDGE);
-        }
+        String[] params = ParamUtils.parseParam(content);
 
-        Integer killerPos = Integer.parseInt(textMessage.getContent().split(" ")[1]);
-        Integer killItemPos = Integer.parseInt(textMessage.getContent().split(" ")[2]);
-        Integer killcluePos = Integer.parseInt(textMessage.getContent().split(" ")[3]);
+        Integer killerPos = Integer.parseInt(params[1]);
+        Integer killItemPos = Integer.parseInt(params[2]);
+        Integer killcluePos = Integer.parseInt(params[3]);
 
         logger.info("user {} begin to judge", username);
 
         Integer isSuccess = gameService.judge(username, killerPos, killItemPos, killcluePos);
         String text = "";
-        if(isSuccess == 0)
+        if (isSuccess == 0)
             text = "断案成功";
         else if (isSuccess == 1)
             text = "断案失败";
@@ -71,7 +69,7 @@ public class DetectiveHandler extends Handler{
 
         logger.info("user {} ", username, text);
 
-        return  ReplyUtil.buildTextReply(String.format(text), message);
+        return ReplyUtil.buildTextReply(String.format(text), message);
 
     }
 }

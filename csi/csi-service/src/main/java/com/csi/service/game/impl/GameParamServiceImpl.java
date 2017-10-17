@@ -2,6 +2,7 @@ package com.csi.service.game.impl;
 
 import com.csi.service.game.IGameParamService;
 import com.csi.service.utils.GameUtils;
+import com.csi.service.utils.ParamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class GameParamServiceImpl implements IGameParamService {
          * c+空格+游戏人数
          * e.g. 输入[c 5]，表示创建5人局游戏"*/
 
-        String[] params = param.split(" ");
+        String[] params = ParamUtils.parseParam(param);
 
         return params.length >= 2;
 
@@ -34,7 +35,7 @@ public class GameParamServiceImpl implements IGameParamService {
          * c+空格+房间号
          * e.g. 输入[j 5432]，表示加入5432房间"*/
 
-        String[] params = param.split(" ");
+        String[] params = ParamUtils.parseParam(param);
 
         return params.length >= 2;
     }
@@ -46,7 +47,7 @@ public class GameParamServiceImpl implements IGameParamService {
          * e.g. 输入[k 3 4]，表示使用3号工具及4号索引犯案*/
 
         try {
-            String[] params = param.split(" ");
+            String[] params = ParamUtils.parseParam(param);
 
             if (params.length < 3)
                 return false;
@@ -70,14 +71,14 @@ public class GameParamServiceImpl implements IGameParamService {
          * e.g. 输入[w 4 5 3 3 2 6 324516]，表示使用3号工具及4号索引犯案*/
 
         try {
-            String[] params = param.split(" ");
+            String[] params = ParamUtils.parseParam(param);
 
             if (params.length < 8)
                 return false;
 
             String posArrays[] = Arrays.copyOfRange(params, 1, 7);
 
-            if (!GameUtils.isElementBetweenMaxMin(posArrays, 4, 1))
+            if (!GameUtils.isElementBetweenMaxMin(posArrays, 6, 1))
                 return false;
 
             Integer weight = Integer.parseInt(params[7]);
@@ -95,6 +96,10 @@ public class GameParamServiceImpl implements IGameParamService {
 
     @Override
     public boolean isCorrectParamLookAllPlayer(String content) {
+        return true;
+    }
+    @Override
+    public boolean isCorrectParamLookAllHistory(String content) {
         return true;
     }
 
@@ -116,9 +121,10 @@ public class GameParamServiceImpl implements IGameParamService {
          * g+空格+凶手位置+工具索引+线索索引
          * e.g. 输入[g 5 3 2]，表示5号是凶手，3号工具，2号线索"*/
 
-        String[] params = content.split(" ");
+        String[] params = ParamUtils.parseParam(content);
 
         return params.length >= 4;
     }
+
 
 }

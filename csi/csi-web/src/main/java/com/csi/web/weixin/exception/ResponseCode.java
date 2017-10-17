@@ -30,6 +30,8 @@ public class ResponseCode {
         public static final String WRONG_PARAM_KILL = "0000314"; /**杀人参数错误*/
         public static final String WRONG_PARAM_LOOK_ALL_PLAYER = "0000315";
         public static final String WRONG_PARAM_DETECTIVE = "0000316";
+        public static final String WRONG_PARAM_LOOK_ALL_HISTORY = "0000317";
+        public static final String WRONG_PARAM_LOOK_GAME_STATUS = "0000318";
 
         public static final String RETURN_HELP = "0000999";
 
@@ -41,5 +43,8 @@ public class ResponseCode {
         public static final String NO_RIGHT_LOOK_ALL_PLAYER = "0000408";
         public static final String NO_RIGHT_LOOK_WITNESS = "0000410";
         public static final String NO_RIGHT_DETECTIVE = "0000411";
+        public static final String NO_RIGHT_EXIT_GAME = "0000412";
+        public static final String NO_RIGHT_LOOK_ALL_HISTORY = "0000413";
+        public static final String NO_RIGHT_LOOK_GAME_STATUS = "0000414";
     }
 }

@@ -76,54 +76,92 @@
         select item_no from tbl_card_crime_scene WHERE item_type = 3 and status = 0;
     </select>
 
-    <update id="kill">
+    <update id="crime">
         update tbl_current_game_detail
-        set crime_item = #{crimeItemPos}, crime_clue= #{crimeCluePos}
-        where game_no = (select game_no from tbl_current_player where user_no = #{killerUserNo})
+        set crime_item = #{crimeItemPos}, crime_clue= #{crimeCluePos},
+            crime_item_name = (select crime_item_${crimeItemPos}_name from tbl_current_player where user_no = #{crimeUserNo}),
+            crime_clue_name = (select crime_clue_${crimeCluePos}_name from tbl_current_player where user_no = #{crimeUserNo})
+        where game_no = (select game_no from tbl_current_player where user_no = #{crimeUserNo})
     </update>
 
     <update id="witness">
         update tbl_current_game_detail
-        set witness_chosen_cause_of_death = #{causePos},
-            witness_chosen_location_of_crime = #{locationPos},
-            witness_chosen_1 = #{clue1Pos},
-            witness_chosen_2 = #{clue2Pos},
-            witness_chosen_3 = #{clue3Pos},
-            witness_chosen_4 = #{clue4Pos},
-            withnes_chosen_weight = #{weight}
+        set witness_chosen_cause_of_death_pos = #{witness.causePos},
+            witness_chosen_location_of_crime_pos = #{witness.locationPos},
+            witness_chosen_1_pos = #{witness.clue1Pos},
+            witness_chosen_2_pos = #{witness.clue2Pos},
+            witness_chosen_3_pos = #{witness.clue3Pos},
+            witness_chosen_4_pos = #{witness.clue4Pos},
+            witness_chosen_cause_of_death_name = split_str(cause_of_death_content, ',', #{witness.causePos}),
+            witness_chosen_location_of_crime_name = split_str(location_of_crime_content, ',', #{witness.locationPos}),
+            witness_chosen_1_name = split_str(clue_1_content, ',', #{witness.clue1Pos}),
+            witness_chosen_2_name = split_str(clue_2_content, ',', #{witness.clue2Pos}),
+            witness_chosen_3_name = split_str(clue_3_content, ',', #{witness.clue3Pos}),
+            witness_chosen_4_name = split_str(clue_4_content, ',', #{witness.clue4Pos}),
+            witness_chosen_cause_of_death_weight = substring(#{witness.weight}, 1, 1),
+            witness_chosen_location_of_crime_weight = substring(#{witness.weight}, 2, 1),
+            witness_chosen_1_weight = substring(#{witness.weight}, 3, 1),
+            witness_chosen_2_weight = substring(#{witness.weight}, 4, 1),
+            witness_chosen_3_weight = substring(#{witness.weight}, 5, 1),
+            witness_chosen_4_weight = substring(#{witness.weight}, 6, 1),
+            witness_chosen_weight = #{witness.weight}
         where game_no = (select game_no from tbl_current_player where user_no = #{witnessUserNo})
     </update>
 
     <update id="succUpdateGame">
         update tbl_current_game
-        set status = 99
-        where game_no = (select game_no from tbl_current_player where user_no = #{userno})
+        set status = 901
+        where game_no = (select game_no from tbl_current_player where user_no = #{userno} and status != 99)
     </update>
     <update id="succUpdateGameDetail">
         update tbl_current_game_detail
-        set status = 99
-        where game_no = (select game_no from tbl_current_player where user_no = #{userno})
+        set status = 901
+        where game_no = (select game_no from tbl_current_player where user_no = #{userno} and status != 99)
     </update>
-    <update id="succUpdateGamePlayer">
+    <update id="updateGamePlayer">
         update tbl_current_player
-        set status = 99
-        where game_no = (select game_no from tbl_current_player where user_no = #{userno})
+        set status = #{gamePlayerStatus}
+        <if test="crimeVo != null">
+            , detect_crime_pos = #{crimeVo.crimePos, jdbcType=INTEGER}
+            , detect_crime_item_pos = #{crimeVo.crimeItemPos, jdbcType=INTEGER}
+            , detect_crime_clue_pos = #{crimeVo.crimeCluePos, jdbcType=INTEGER}
+        </if>
+        where user_no = #{userno}) and status != 99
     </update>
 
-    <update id="judgeFailedUpdateGamePlayer">
-        update tbl_current_player
-        set status = 1
-        where game_no = (select game_no from tbl_current_player where user_no = #{userno})
+    <update id="updateGameStatus">
+        update tbl_current_game
+        set status = #{gameStatusNew}
+        where game_no = #{gameNo}
+        <if test="gameStatusCondition != null">
+            and status = #{gameStatusCondition}
+        </if>
     </update>
 
-    <select id="selectKiller" resultMap="killer">
-        select a.pos_of_crime_user, b.crime_item, b.crime_clue from
+    <update id="updateGameStatusByUserNo">
+        update tbl_current_game
+        set status = #{gameStatusNew}
+        where game_no = (select game_no from tbl_current_player where status = 0 and user_no = #{userNo})
+        <if test="gameStatusCondition != null">
+            and status = #{gameStatusCondition}
+        </if>
+    </update>
+
+    <update id="detectiveFail">
+        update tbl_current_player
+        set status = #{detectiveStatus}
+        where user_no = #{userNo}
+        and status = #{detectiveStatusOld}
+    </update>
+
+    <select id="selectCrime" resultMap="killer">
+        select a.pos_of_crime_user as crimePos, b.crime_item as crimeItemPos, b.crime_clue as crimeCluePos from
         ( select * from tbl_current_game
           where game_no = (select game_no from tbl_current_player WHERE user_no = #{userno} and status != 99) ) a
         join
         (select * from tbl_current_game_detail where status != 99 ) b on a.game_no = b.game_no
     </select>
-    <resultMap id="killer" type="com.csi.model.game.KillerVo" autoMapping="true"/>
+    <resultMap id="killer" type="com.csi.model.game.CrimeVo" autoMapping="true"/>
 
     <select id="selectCountGameByNo" resultType="int">
         select count(*) from tbl_current_game where game_no = #{gameNo} and status != 99
@@ -132,7 +170,12 @@
         insert into tbl_current_player
         (user_no, game_no, game_role, game_pos, status,
         crime_item_1, crime_item_2, crime_item_3, crime_item_4,
-        crime_clue_1, crime_clue_2, crime_clue_3, crime_clue_4, remark)
+        crime_clue_1, crime_clue_2, crime_clue_3, crime_clue_4,
+        crime_item_1_name, crime_item_2_name, crime_item_3_name, crime_item_4_name,
+        crime_clue_1_name, crime_clue_2_name, crime_clue_3_name, crime_clue_4_name,
+        crime_item_1_pic_url, crime_item_2_pic_url, crime_item_3_pic_url, crime_item_4_pic_url,
+        crime_clue_1_pic_url, crime_clue_2_pic_url, crime_clue_3_pic_url, crime_clue_4_pic_url,
+        remark)
         VALUES
         (#{player.userNo, jdbcType=VARCHAR},
         #{player.gameNo, jdbcType=INTEGER},
@@ -147,13 +190,29 @@
 		#{player.crimeClue2, jdbcType=INTEGER},
 		#{player.crimeClue3, jdbcType=INTEGER},
 		#{player.crimeClue4, jdbcType=INTEGER},
+	    #{player.crimeItem1Name, jdbcType=VARCHAR},
+        #{player.crimeItem2Name, jdbcType=VARCHAR},
+        #{player.crimeItem3Name, jdbcType=VARCHAR},
+        #{player.crimeItem4Name, jdbcType=VARCHAR},
+        #{player.crimeClue1Name, jdbcType=VARCHAR},
+        #{player.crimeClue2Name, jdbcType=VARCHAR},
+        #{player.crimeClue3Name, jdbcType=VARCHAR},
+        #{player.crimeClue4Name, jdbcType=VARCHAR},
+        #{player.crimeItem1PicUrl, jdbcType=VARCHAR},
+        #{player.crimeItem2PicUrl, jdbcType=VARCHAR},
+        #{player.crimeItem3PicUrl, jdbcType=VARCHAR},
+        #{player.crimeItem4PicUrl, jdbcType=VARCHAR},
+        #{player.crimeClue1PicUrl, jdbcType=VARCHAR},
+        #{player.crimeClue2PicUrl, jdbcType=VARCHAR},
+        #{player.crimeClue3PicUrl, jdbcType=VARCHAR},
+        #{player.crimeClue4PicUrl, jdbcType=VARCHAR},
         #{player.remark, jdbcType=VARCHAR})
     </insert>
 
     <!--<select id="selectAvailablePos" resultMap="playerNumberVo">-->
-        <!--select a.count, b.nums from (-->
-          <!--SELECT count(*) as count FROM csi.tbl_current_player where game_no = #{gameNo} and status = 0 ) a-->
-          <!--, ( select nums from tbl_current_game where game_no = #{gameNo} and status != 99 )  b-->
+    <!--select a.count, b.nums from (-->
+    <!--SELECT count(*) as count FROM csi.tbl_current_player where game_no = #{gameNo} and status = 0 ) a-->
+    <!--, ( select nums from tbl_current_game where game_no = #{gameNo} and status != 99 )  b-->
     <!--</select>-->
     <!--<resultMap id="playerNumberVo" type="com.csi.model.game.PlayerNumberVo" autoMapping="true"/>-->
 
@@ -161,7 +220,7 @@
         SELECT count(*) as count FROM csi.tbl_current_player where game_no = #{gameNo} and status = 0
     </select>
     <!--<select id="numbers" resultType="int">-->
-        <!--select nums from tbl_current_game where game_no = #{gameNo} and status != 99-->
+    <!--select nums from tbl_current_game where game_no = #{gameNo} and status != 99-->
     <!--</select>-->
 
     <select id="getGameByNo" resultMap="game">
@@ -186,9 +245,8 @@
     </select>
 
 
-
     <select id="selectCountInGame" resultType="int">
-        select count(*) from tbl_current_player where status = 0 and user_no = #{userNo}
+        select count(*) from tbl_current_player where status not in (99, 3) and user_no = #{userNo}
     </select>
 
     <resultMap id="gameVo" type="com.csi.model.game.GameVo" autoMapping="true"/>
@@ -196,21 +254,30 @@
         select * from v_game where gameNo = #{gameNo};
     </select>
     <select id="selectGameByUserNo" resultMap="gameVo">
-        select * from v_game where gameNo = (select game_no from tbl_current_player where status = 0 and user_no = #{userNo});
+        select * from v_game where gameNo = (select game_no from tbl_current_player where status != 99 and user_no = #{userNo});
     </select>
 
     <resultMap id="playerVo" type="com.csi.model.game.PlayerVo" autoMapping="true"/>
     <select id="lookAllPlayer" resultMap="playerVo">
         SELECT game_pos as gamePos,
+       detect_crime_pos as detectiveCrimePos,
+       detect_crime_item_pos as detectiveCrimeItemPos,
+       detect_crime_clue_pos as detectiveCrimeCluePos,
        crime_item_1_name as crimeItem1Name,
        crime_item_2_name as crimeItem2Name,
        crime_item_3_name as crimeItem3Name,
        crime_item_4_name as crimeItem4Name,
-       crime_clue_1_clue as crimeClue1Name,
-       crime_clue_2_clue as crimeClue2Name,
-       crime_clue_3_clue as crimeClue3Name,
-       crime_clue_4_clue as crimeClue4Name
+       crime_clue_1_name as crimeClue1Name,
+       crime_clue_2_name as crimeClue2Name,
+       crime_clue_3_name as crimeClue3Name,
+       crime_clue_4_name as crimeClue4Name
        FROM tbl_current_player
-       where status = 0 and game_no = (select game_no from tbl_current_player where user_no = #{userNo})
+       where game_no = (select game_no from tbl_current_player where user_no = #{userNo})
     </select>
+
+    <update id="playerExit">
+        update tbl_current_player
+        set status = #{playerStatus}
+        where user_no = #{userNo}
+    </update>
 </mapper>

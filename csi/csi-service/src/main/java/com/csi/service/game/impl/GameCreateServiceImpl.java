@@ -3,6 +3,7 @@ package com.csi.service.game.impl;
 import com.csi.dao.game.IGameDao;
 import com.csi.model.constants.enums.GameRoleEnum;
 import com.csi.model.constants.enums.CardItemTypeEnum;
+import com.csi.model.constants.enums.GameStatusEnums;
 import com.csi.model.game.*;
 import com.csi.service.game.IGameCreateService;
 import com.csi.service.utils.GameUtils;
@@ -101,6 +102,11 @@ public class GameCreateServiceImpl implements IGameCreateService {
             PlayerVo playerVo1 = GameUtils.setPlayerItem(playerVo, itemList, clueList) ;
 
             gameDao.joinGame(playerVo1);
+
+            if(selectCount == game.getNums() - 1){
+                /**人数已齐，更新游戏状态*/
+                gameDao.updateGameStatus(gameNo, GameStatusEnums.NIGHT_1_CRIME.getId(), GameStatusEnums.STARTING.getId());
+            }
 
             logger.info("user {} join game: {} succes", username, gameNo);
 

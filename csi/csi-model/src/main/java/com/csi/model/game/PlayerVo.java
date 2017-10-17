@@ -1,5 +1,7 @@
 package com.csi.model.game;
 
+import java.util.List;
+
 /**
  * Created by fanlin on 2017/10/13.
  */
@@ -10,6 +12,11 @@ public class PlayerVo {
     private Integer gameRole;
     private Integer gameNums;
     private Integer gamePos;
+
+    private Integer detectiveCrimePos;
+    private Integer detectiveCrimeItemPos;
+    private Integer detectiveCrimeCluePos;
+
     private Integer gameCrime; /*同伴的位置， 凶手 <-> 帮凶*/
     private Integer gameCrimeAss; /*同伴的位置， 凶手 <-> 帮凶*/
     private Integer gameWitness; /*同伴的位置， 凶手 <-> 帮凶*/
@@ -40,12 +47,48 @@ public class PlayerVo {
     private String crimeClue4PicUrl;
     private String remark;
 
+    /**根据当前玩家的猜测凶手pos, 从playerVos中get出来*/
+    public PlayerVo getSuspectPlayer(List<PlayerVo> playerVos) {
+        PlayerVo result = null;
+        for(PlayerVo playerVo : playerVos){
+            if(this.detectiveCrimePos == playerVo.getGamePos()){
+                result = playerVo;
+            }
+        }
+
+        return result;
+    }
+
     public String getUserNo() {
         return userNo;
     }
 
     public void setUserNo(String userNo) {
         this.userNo = userNo;
+    }
+
+    public Integer getDetectiveCrimePos() {
+        return detectiveCrimePos;
+    }
+
+    public void setDetectiveCrimePos(Integer detectiveCrimePos) {
+        this.detectiveCrimePos = detectiveCrimePos;
+    }
+
+    public Integer getDetectiveCrimeItemPos() {
+        return detectiveCrimeItemPos;
+    }
+
+    public void setDetectiveCrimeItemPos(Integer detectiveCrimeItemPos) {
+        this.detectiveCrimeItemPos = detectiveCrimeItemPos;
+    }
+
+    public Integer getDetectiveCrimeCluePos() {
+        return detectiveCrimeCluePos;
+    }
+
+    public void setDetectiveCrimeCluePos(Integer detectiveCrimeCluePos) {
+        this.detectiveCrimeCluePos = detectiveCrimeCluePos;
     }
 
     public Integer getGameNo() {
@@ -312,4 +355,5 @@ public class PlayerVo {
     public void setGameWitness(Integer gameWitness) {
         this.gameWitness = gameWitness;
     }
+
 }

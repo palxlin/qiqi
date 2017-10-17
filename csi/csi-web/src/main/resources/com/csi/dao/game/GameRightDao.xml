@@ -5,7 +5,7 @@
 <mapper namespace="com.csi.dao.game.IGameDao">
 
     <select id="hasRightByStatusArray" resultType="int">
-        select count(*) from tbl_current_player a join tbl_current_game_detail b
+        select count(*) from tbl_current_player a join tbl_current_game b
         on a.game_no = b.game_no
         where a.status = 0 and a.user_no = #{userNo} and a.game_role = #{gameRole}
         and b.status in
@@ -16,27 +16,31 @@
     </select>
 
     <select id="hasRightByRoleStatusArray" resultType="int">
-        select count(*) from tbl_current_player a join tbl_current_game_detail b
+        select count(*) from tbl_current_player a join tbl_current_game b
         on a.game_no = b.game_no
         where a.status = 0 and a.user_no = #{userNo}
         <if test="gameRole != null">
-            and a.gamerole in
-            <foreach collection="array" item="gameRole" index="index"
+            and a.game_role in
+            <foreach collection="gameRole" item="role" index="index"
                      open="(" close=")" separator=",">
-                #{gameRole}
+                #{role}
             </foreach>
         </if>
         and b.status in
-        <foreach collection="array" item="gameStatus" index="index"
+        <foreach collection="gameStatus" item="status" index="index"
                  open="(" close=")" separator=",">
-            #{gameStatus}
+            #{status}
         </foreach>
     </select>
 
     <select id="hasRight" resultType="int">
-        select count(*) from tbl_current_player a join tbl_current_game_detail b
+        select count(*) from tbl_current_player a join tbl_current_game b
         on a.game_no = b.game_no
         where a.status = 0 and a.user_no = #{userNo} and a.game_role = #{gameRole}
-        and b.status = #{gameStatus}
+        and b.status in
+        <foreach collection="gameStatus" item="status" index="index"
+                 open="(" close=")" separator=",">
+            #{status}
+        </foreach>
     </select>
 </mapper>
