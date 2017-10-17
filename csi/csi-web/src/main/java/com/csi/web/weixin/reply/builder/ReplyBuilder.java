@@ -1,7 +1,7 @@
 package com.csi.web.weixin.reply.builder;
 
 import com.csi.web.weixin.reply.Reply;
-import com.csi.web.weixin.reply.ReplyDetail;
+import com.csi.web.weixin.reply.wrapper.ReplyDetail;
 
 import java.util.List;
 

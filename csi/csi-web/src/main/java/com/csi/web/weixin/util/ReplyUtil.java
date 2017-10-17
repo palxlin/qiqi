@@ -3,8 +3,8 @@ package com.csi.web.weixin.util;
 import com.csi.web.weixin.processor.ReplyProcessorFactory;
 import com.csi.web.weixin.receive.Message;
 import com.csi.web.weixin.reply.Reply;
-import com.csi.web.weixin.reply.ReplyDetail;
-import com.csi.web.weixin.reply.ReplyDetailWrapper;
+import com.csi.web.weixin.reply.wrapper.ReplyDetail;
+import com.csi.web.weixin.reply.wrapper.ReplyDetailWrapper;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +41,20 @@ public class ReplyUtil {
         replyDetail.setDescription(msg);
 
         Reply reply = ReplyUtil.parseReplyDetailWarpper(new ReplyDetailWrapper(ReplyProcessorFactory.TEXT.getReplyType(), Arrays.asList(replyDetail)));
+
+        return ReplyUtil.buildReply(reply, message);
+    }
+//
+//    public static Reply buildNewsReply(ReplyDetail replyDetail, Message message){
+//
+//        Reply reply = ReplyUtil.parseReplyDetailWarpper(new ReplyDetailWrapper("news", Arrays.asList(replyDetail)));
+//
+//        return ReplyUtil.buildReply(reply, message);
+//    }
+
+    public static Reply buildNewsReply(Message message, ReplyDetail... replyDetails){
+
+        Reply reply = ReplyUtil.parseReplyDetailWarpper(new ReplyDetailWrapper("news", Arrays.asList(replyDetails)));
 
         return ReplyUtil.buildReply(reply, message);
     }

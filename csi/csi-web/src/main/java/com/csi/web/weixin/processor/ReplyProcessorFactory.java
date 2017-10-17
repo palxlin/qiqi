@@ -1,7 +1,9 @@
 package com.csi.web.weixin.processor;
 
 import com.csi.web.weixin.reply.Reply;
-import com.csi.web.weixin.reply.ReplyDetail;
+import com.csi.web.weixin.reply.builder.NewsReplyBuilder;
+import com.csi.web.weixin.reply.wrapper.ReplyDetail;
+import com.csi.web.weixin.reply.builder.ImageReplyBuilder;
 import com.csi.web.weixin.reply.builder.ReplyBuilder;
 import com.csi.web.weixin.reply.builder.TextReplyBuilder;
 
@@ -15,6 +17,16 @@ public enum ReplyProcessorFactory {
         @Override
         protected ReplyBuilder getReplyBuilder() {
             return new TextReplyBuilder();
+        }
+    }, IMAGE("image") {
+        @Override
+        protected ReplyBuilder getReplyBuilder() {
+            return new ImageReplyBuilder();
+        }
+    }, NEWS("news") {
+        @Override
+        protected ReplyBuilder getReplyBuilder() {
+            return new NewsReplyBuilder();
         }
     };
 

@@ -1,4 +1,6 @@
-package com.csi.web.weixin.reply;
+package com.csi.web.weixin.reply.wrapper;
+
+import com.csi.web.weixin.reply.wrapper.ReplyDetail;
 
 import java.util.List;
 

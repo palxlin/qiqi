@@ -1,4 +1,4 @@
-package com.csi.web.weixin.reply;
+package com.csi.web.weixin.reply.wrapper;
 
 /**
  * Created by fanlin on 2017/10/11.
