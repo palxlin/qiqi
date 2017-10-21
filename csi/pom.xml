@@ -137,6 +137,11 @@
             <artifactId>fastjson</artifactId>
             <version>1.1.41</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -175,7 +180,7 @@
             <id>dev</id>
             <build>
                 <filters>
-                    <filter>../config/dev.properties</filter>
+                    <filter>../systemConfig/dev.properties</filter>
                 </filters>
             </build>
         </profile>
@@ -183,7 +188,7 @@
             <id>test</id>
             <build>
                 <filters>
-                    <filter>../config/test.properties</filter>
+                    <filter>../systemConfig/test.properties</filter>
                 </filters>
             </build>
         </profile>
@@ -191,7 +196,7 @@
             <id>production</id>
             <build>
                 <filters>
-                    <filter>../config/production.properties</filter>
+                    <filter>../systemConfig/production.properties</filter>
                 </filters>
             </build>
             <activation>
