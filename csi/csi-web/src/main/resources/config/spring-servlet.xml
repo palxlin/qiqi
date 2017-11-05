@@ -27,5 +27,7 @@
         <property name="suffix" value=".jsp" />
     </bean>
 
+    <import resource="spring/spring-bean.xml"></import>
+
     <import resource="spring/spring-handler.xml"></import>
 </beans>

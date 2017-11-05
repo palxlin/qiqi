@@ -1,8 +1,10 @@
-package com.csi.web.service;
+package com.csi.service.weixin;
 
 import com.csi.exception.AccessCountExceedException;
 import com.csi.exception.AccessTimeoutException;
+import com.csi.map.MaintainableMap;
 import com.csi.model.weixin.AccessToken;
+import com.csi.system.WeixinConfig;
 import com.csi.web.system.AdminConfig;
 import com.sun.deploy.ui.AppInfo;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,7 @@ public class AuthTokenService {
 
 
     public void initSessionMap() {
-        accessTokenMap = new MaintainableMap<String, AccessToken>(sessionMapSize, 0.7f, AdminConfig.getInt(AdminConfig.KEY_ACCESS_TOKEN_TIMEOUT) * 60 * 10, AdminConfig.getInt(AdminConfig.KEY_ACCESS_TOKEN_MAX_COUNT) + 1);
+        accessTokenMap = new MaintainableMap<String, AccessToken>(sessionMapSize, 0.7f, WeixinConfig.ACCESS_TOKEN_TIMEOUT * 60 * 10, WeixinConfig.ACCESS_TOKEN_MAX_COUNT + 1);
     }
 
     public AccessToken getAccessToken(String accessToken) throws AccessTimeoutException, AccessCountExceedException {
@@ -40,7 +42,7 @@ public class AuthTokenService {
 
     }
 
-    public AccessToken getAccessTokenSilence(String accessToken){
+    public AccessToken getAccessTokenSilence(String accessToken) {
 
         try {
             return accessTokenMap.get(accessToken);

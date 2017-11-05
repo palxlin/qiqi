@@ -1,8 +1,12 @@
 package com.csi.web.system;
 
 import com.csi.model.system.Config;
+import com.csi.service.ConfigService;
 import com.csi.system.SystemConfig;
 import com.csi.model.weixin.WeixinAppInfo;
+import com.csi.service.weixin.AuthTokenService;
+import com.csi.system.WeixinConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
@@ -14,6 +18,15 @@ import java.util.Map;
  * Created by fanlin on 2017/10/17.
  */
 public class AdminConfig extends SystemConfig implements ApplicationListener<ContextRefreshedEvent>{
+
+    @Autowired
+    AuthTokenService authTokenService;
+
+    @Autowired
+    WeixinConfig weixinConfig;
+
+    @Autowired
+    ConfigService configService;
 
     private Integer systemId;
 
@@ -38,7 +51,7 @@ public class AdminConfig extends SystemConfig implements ApplicationListener<Con
 
                 staticContextPath = getContextPath();
 
-                doLoad();
+                // doLoad();
 
                 authTokenService.initSessionMap();
 
@@ -61,6 +74,9 @@ public class AdminConfig extends SystemConfig implements ApplicationListener<Con
     }
 
 
+    /**
+     * 动态读取config表中的数据
+     * */
     public void doLoad() {
 
         List<Config> configs = configService.refresh(systemId);

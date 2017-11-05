@@ -81,7 +81,7 @@
         set crime_item = #{crimeItemPos}, crime_clue= #{crimeCluePos},
             crime_item_name = (select crime_item_${crimeItemPos}_name from tbl_current_player where user_no = #{crimeUserNo}),
             crime_clue_name = (select crime_clue_${crimeCluePos}_name from tbl_current_player where user_no = #{crimeUserNo})
-        where game_no = (select game_no from tbl_current_player where user_no = #{crimeUserNo})
+        where game_no = (select game_no from tbl_current_player where user_no = #{crimeUserNo} and status != 99 )
     </update>
 
     <update id="witness">
@@ -105,7 +105,7 @@
             witness_chosen_3_weight = substring(#{witness.weight}, 5, 1),
             witness_chosen_4_weight = substring(#{witness.weight}, 6, 1),
             witness_chosen_weight = #{witness.weight}
-        where game_no = (select game_no from tbl_current_player where user_no = #{witnessUserNo})
+        where game_no = (select game_no from tbl_current_player where user_no = #{witnessUserNo} and status != 99)
     </update>
 
     <update id="succUpdateGame">
@@ -141,7 +141,7 @@
     <update id="updateGameStatusByUserNo">
         update tbl_current_game
         set status = #{gameStatusNew}
-        where game_no = (select game_no from tbl_current_player where status = 0 and user_no = #{userNo})
+        where game_no = (select game_no from tbl_current_player where user_no = #{userNo} and status != 99)
         <if test="gameStatusCondition != null">
             and status = #{gameStatusCondition}
         </if>
@@ -254,7 +254,7 @@
         select * from v_game where gameNo = #{gameNo};
     </select>
     <select id="selectGameByUserNo" resultMap="gameVo">
-        select * from v_game where gameNo = (select game_no from tbl_current_player where status != 99 and user_no = #{userNo});
+        select * from v_game where gameNo = (select game_no from tbl_current_player where user_no = #{userNo} and status != 99 );
     </select>
 
     <resultMap id="playerVo" type="com.csi.model.game.PlayerVo" autoMapping="true"/>
@@ -272,7 +272,7 @@
        crime_clue_3_name as crimeClue3Name,
        crime_clue_4_name as crimeClue4Name
        FROM tbl_current_player
-       where game_no = (select game_no from tbl_current_player where user_no = #{userNo})
+       where game_no = (select game_no from tbl_current_player where user_no = #{userNo} and status != 99)
     </select>
 
     <update id="playerExit">
