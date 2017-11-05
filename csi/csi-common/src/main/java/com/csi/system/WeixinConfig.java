@@ -38,7 +38,7 @@ public class WeixinConfig extends SystemConfig implements InitializingBean{
 
     private void loadFromFile() {
 
-        setMenuJson(FileUtil.loadFileAsString(getFilePath() + WeixinConstans.MENU_FILE_NAME));
+        setMenuJson(FileUtil.loadFileAsString(getFilePath() + "/" + WeixinConstans.MENU_FILE_NAME));
     }
 
     public void reloadAccessToken() throws Exception{

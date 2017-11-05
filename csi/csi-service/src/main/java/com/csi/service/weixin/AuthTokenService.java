@@ -4,9 +4,9 @@ import com.csi.exception.AccessCountExceedException;
 import com.csi.exception.AccessTimeoutException;
 import com.csi.map.MaintainableMap;
 import com.csi.model.weixin.AccessToken;
+import com.csi.model.weixin.WeixinAppInfo;
 import com.csi.system.WeixinConfig;
-import com.csi.web.system.AdminConfig;
-import com.sun.deploy.ui.AppInfo;
+import com.csi.util.NumberGenerator;
 import org.springframework.stereotype.Service;
 
 /**
@@ -56,7 +56,7 @@ public class AuthTokenService {
         accessTokenMap.put(vid, appContext);
     }
 
-    public AccessToken generate(AppInfo appInfo) {
+    public AccessToken generate(WeixinAppInfo appInfo) {
 
         String token = NumberGenerator.generate();
 

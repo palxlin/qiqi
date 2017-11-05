@@ -6,6 +6,8 @@ import com.csi.system.SystemConfig;
 import com.csi.model.weixin.WeixinAppInfo;
 import com.csi.service.weixin.AuthTokenService;
 import com.csi.system.WeixinConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -18,6 +20,8 @@ import java.util.Map;
  * Created by fanlin on 2017/10/17.
  */
 public class AdminConfig extends SystemConfig implements ApplicationListener<ContextRefreshedEvent>{
+
+    public static final Logger logger = LoggerFactory.getLogger(AdminConfig.class);
 
     @Autowired
     AuthTokenService authTokenService;
@@ -45,9 +49,15 @@ public class AdminConfig extends SystemConfig implements ApplicationListener<Con
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
+        logger.info("on application event start, {}", event.getApplicationContext().getParent());
+
         if (event.getApplicationContext().getParent() == null) {
 
+            logger.debug("event get application context get parent is not null");
+
             if (event instanceof ContextRefreshedEvent) {
+
+                logger.info("context refresh event start");
 
                 staticContextPath = getContextPath();
 
@@ -56,6 +66,8 @@ public class AdminConfig extends SystemConfig implements ApplicationListener<Con
                 authTokenService.initSessionMap();
 
                 try {
+
+                    logger.info("onTestMode = {}", isOnTestMode());
 
                     if (!isOnTestMode()) {
 

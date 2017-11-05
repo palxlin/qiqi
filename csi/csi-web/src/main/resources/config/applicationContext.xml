@@ -13,7 +13,8 @@
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
-    <context:property-placeholder location="classpath:systemConfig/jdbc.properties"/>
+    <context:property-placeholder location="classpath:config/jdbc.properties"/>
+    <context:property-placeholder location="classpath:config/weixin.properties"/>
 
     <!-- 自动加service层注入-->
     <context:component-scan base-package="com.csi.service"/>
@@ -61,10 +62,10 @@
         </tx:attributes>
     </tx:advice>
 
-    <aop:systemConfig>
+    <aop:config>
         <aop:pointcut id="txPointcut" expression="execution(* com.csi.*.impl..*(..))" />
         <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
-    </aop:systemConfig>
+    </aop:config>
 
 
 </beans>
