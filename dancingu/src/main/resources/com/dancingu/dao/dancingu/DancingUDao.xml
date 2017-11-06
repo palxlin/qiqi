@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dancingu.dao.dancingu.IDancingUDao">
+    <select id="existProblem" parameterType="com.dancingu.model.UploadVo" resultType="int">>
+        select count(*) from tbl_problem where title = #{problem.title} and status =
+    </select>
+
+    <insert id="addProblem" parameterType="com.dancingu.model.UploadVo">
+        insert into tbl_problem
+        (
+          title,
+          answer,
+          status
+        )
+        VALUES
+        (
+          #{problem.title, jdbcType=VARCHAR},
+          #{problem.answer, jdbcType=VARCHAR},
+          0
+        )
+    </insert>
+
+    <update id="updateProblem" parameterType="com.dancingu.model.UploadVo">
+        update tbl_problem
+        set answer = #{problem.answer}
+        where title  = #{problem.title} and status = 0
+    </update>
+
+    <resultMap id="queryResult" type="com.dancingu.model.QueryResultVo" autoMapping="true"></resultMap>
+    <select id="queryProblem" resultMap="QueryResultVo">
+        select title,
+                answer1,
+                answer2,
+                answer3,
+                answer4,
+                answer5,
+                answer6,
+        from tbl_problem
+        where title = #{problem.title} and status = 0 limit 1
+    </select>
+</mapper>
