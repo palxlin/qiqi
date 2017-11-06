@@ -27,5 +27,29 @@
         <property name="suffix" value=".jsp" />
     </bean>
 
+    <bean id="adminConfig" class="com.csi.web.system.AdminConfig">
+
+        <property name="systemId" value="1"></property>
+        <!--<property name="onTestMode" value="${onTestMode}"></property>-->
+        <!--<property name="filePath" value="${config.files.path}"></property>-->
+        <!--<property name="contextPath" value="${config.context.web.path"></property>-->
+        <property name="onTestMode" value="false"></property>
+        <property name="filePath" value="/home/csi/conf"></property>
+        <property name="contextPath" value="http://47.91.242.114/csi-web"></property>
+    </bean>
+
+    <bean id="weixinConfig" class="com.csi.system.WeixinConfig">
+        <!--<property name="token" value="${weixin_token}"></property>-->
+        <!--<property name="appId" value="${weixin_appid}"></property>-->
+        <!--<property name="appSecret" value="${weixin_appSecret}"></property>-->
+        <!--<property name="filePath" value="${config.files.path}"></property>-->
+        <property name="token" value="c5b595e847281f11452afbb53f80dfd7"></property>
+        <property name="appId" value="wxb153c2e13748d08c"></property>
+        <property name="appSecret" value="197b31dc7f8225357e3d91ca6eb76b1a"></property>
+        <property name="filePath" value="/home/csi/conf"></property>
+    </bean>
+
+    <!--<import resource="spring/spring-bean.xml"></import>-->
+
     <import resource="spring/spring-handler.xml"></import>
 </beans>

@@ -1,0 +1,24 @@
+﻿{
+    "button": [
+        {
+            "type": "view",
+            "name": "测试view",
+            "url": "http://baidu.com"
+        },
+        {
+            "name": "菜单",
+            "sub_button": [
+                {
+                    "type": "click",
+                    "name": "创建游戏",
+                    "key": "rselfmenu_0_0"
+                },
+                {
+                    "type": "view",
+                    "name": "查看房间",
+                    "key": "http://www.sohu.com"
+                }
+            ]
+        }
+    ]
+}
